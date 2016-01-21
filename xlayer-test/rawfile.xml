@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<xlayer>
+	<truc machin='666' xmlns:sy='net.alantea.hypra.test.raw'>
+		<machin>69</machin>
+		<sy:bidule></sy:bidule>
+		<bidule></bidule>
+		<packed></packed>
+		<packed></packed>
+		<addAll>
+			<bidule></bidule>
+			<bidule></bidule>
+			<bidule></bidule>
+			<bidule></bidule>
+		</addAll>
+		<variable name='toto'>
+			<bidule></bidule>
+		</variable>
+		<biduloide>
+			<bidule _variable='toto' />
+			<bidule2></bidule2>
+		</biduloide>
+		<variable name='titi'>
+			<integer>42</integer>
+		</variable>
+		<machin _variable='titi' />
+		<include path='rawsubfile.xml'/>
+	</truc>
+</xlayer>

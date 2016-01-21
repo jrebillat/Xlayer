@@ -1,0 +1,79 @@
+The concept is to parse an XML file describing a set of objects creation and assembly.
+
+There is a master object that will contain all the content assembled.
+
+There must be a root element.
+<root>
+</root>
+
+This root element may be the keycode "xlayer", that will be ignored - but is necessary for XML.
+<xlayer>
+</xlayer>
+
+The root element may have namespaces definitions. This definitions will associate prefixes to
+package names :
+<xlayer xmlns:tst='net.alantea.hypra.test.raw'>
+</xlayer>
+=> the pacakge 'net.alantea.hypra.test.raw' will be registered and associated with 'tst:' prefix.
+
+an element may be a new object to be created, a simple value, a list or a method.
+
+You have to register packages or specific classes before parsing the XML file, using :
+
+void Manager.addPackage(String pack);
+void Manager.addClass(String pack);
+
+You may provide variable (see below) definitions :
+
+void Manager.addVariable(String name, Object content);
+
+then, just parse a String or a file using a reader. You will have to provide a top object that
+will contain the root element after parsing :
+
+boolean Manager.parse(Object top, String xmlString);
+boolean Manager.parse(Object top, Reader xmlFile);
+
+The boolean return indicates if parsing was successful. Future releases will offer more information... 
+
+For each xml element, the parser will search for a field, a method (unless attribute "_class" is given, see below)
+then an object. Think that using method is only useful when they have multiple parameters, as it is
+possible to do object creation and setting in one step (see below).
+
+If the container is a method, the created contained objects will be added to the list of parameters for it.
+Note that methods may not be nested.
+
+When this is an object, it must be a bean (with an empty constructor) :
+<myObject _class='classname'></myObject>
+The "_class" attribute is optional. If not given, the searched class will be "MyObject".
+
+If the container for the object is another object, then a search through the class hierarchy 
+(all steps for a class, then same for superclass) will be made :
+1- search for a method "myObject(Myobject object)" in container
+2- search for a method "setMyObject(Myobject object)" in container
+3- search for a method "addMyObject(Myobject object)" in container
+4- search for a field named "myObject" in container
+5- search for a method "getMyObjects()" in container and an "add(MyObject object)" on the returned type.
+
+You can create and use variable. A variable may contain an object or a simple type.
+creating is like :
+<variable name='myname'>whatever XML tree</variable>
+
+using a variable anywhere is like :
+<myobject _variable='myname'/>
+
+if needed, you may get a variable value after parsing :
+
+Object Manager.getVariable(String name);
+
+you can create a simple value just by settings its value :
+<myValue>36</myValue>
+or by specifying its type - necessary to build lists, see below :
+<integer>22</integer> or <String>Toto</String>
+
+lists may be created with the "list" keycode:
+<list>
+ <integer>1</integer>
+ <integer>2</integer>
+ <integer>3</integer>
+ <integer>4</integer>
+</list>

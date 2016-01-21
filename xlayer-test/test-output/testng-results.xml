@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="4" passed="4">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="426" started-at="2016-01-21T19:56:44Z" finished-at="2016-01-21T19:56:44Z">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="426" started-at="2016-01-21T19:56:44Z" finished-at="2016-01-21T19:56:44Z">
+      <class name="net.alantea.xlayer.junit.SimpleObjectLoadTest">
+        <test-method status="PASS" signature="setUpBeforeClass()[pri:0, instance:net.alantea.xlayer.junit.SimpleObjectLoadTest@71e7a66b]" name="setUpBeforeClass" is-config="true" duration-ms="295" started-at="2016-01-21T20:56:44Z" finished-at="2016-01-21T20:56:44Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUpBeforeClass -->
+        <test-method status="PASS" signature="loadListedWrapper()[pri:0, instance:net.alantea.xlayer.junit.SimpleObjectLoadTest@71e7a66b]" name="loadListedWrapper" duration-ms="54" started-at="2016-01-21T20:56:44Z" finished-at="2016-01-21T20:56:44Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- loadListedWrapper -->
+        <test-method status="PASS" signature="loadSimpleObjects()[pri:0, instance:net.alantea.xlayer.junit.SimpleObjectLoadTest@71e7a66b]" name="loadSimpleObjects" duration-ms="19" started-at="2016-01-21T20:56:44Z" finished-at="2016-01-21T20:56:44Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- loadSimpleObjects -->
+        <test-method status="PASS" signature="loadSimpleWrapper()[pri:0, instance:net.alantea.xlayer.junit.SimpleObjectLoadTest@71e7a66b]" name="loadSimpleWrapper" duration-ms="13" started-at="2016-01-21T20:56:44Z" finished-at="2016-01-21T20:56:44Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- loadSimpleWrapper -->
+        <test-method status="PASS" signature="methodsTest()[pri:0, instance:net.alantea.xlayer.junit.SimpleObjectLoadTest@71e7a66b]" name="methodsTest" duration-ms="16" started-at="2016-01-21T20:56:44Z" finished-at="2016-01-21T20:56:44Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- methodsTest -->
+      </class> <!-- net.alantea.xlayer.junit.SimpleObjectLoadTest -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>

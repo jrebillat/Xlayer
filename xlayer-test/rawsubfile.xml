@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<xlayer>
+	<variable name='tutu'>
+		<bidule></bidule>
+	</variable>
+	<biduloide>
+		<bidule _variable='toto' />
+		<bidule2></bidule2>
+	</biduloide>
+</xlayer>
