@@ -449,7 +449,7 @@ public final class Manager
       }
       System.out.println("searching for " + clName);
       Class<?> cl = getKnownClass(clName);
-      
+
       if (cl == null)
       {
          try
@@ -459,20 +459,20 @@ public final class Manager
          }
          catch (ClassNotFoundException e)
          {
-        	 // well, maybe a bad-formed name ?
-             Class<?> cl1 = getKnownClass(name);
-             if (cl == null)
-             {
-        	    try
-        	    {
-        		    cl = Class.forName(name);
-        		    classes.put(clName, cl);
-        	    }
-        	    catch (ClassNotFoundException e1)
-        	    {
-        		   // bad luck...
-        	    }
-             }
+            // well, maybe a bad-formed name ?
+            cl = getKnownClass(name);
+            if (cl == null)
+            {
+               try
+               {
+                  cl = Class.forName(name);
+                  classes.put(clName, cl);
+               }
+               catch (ClassNotFoundException e1)
+               {
+                  // bad luck...
+               }
+            }
          }
       }
       return cl;
@@ -537,19 +537,19 @@ public final class Manager
    static boolean setOrAddAttribute(Class<?> cl, Object target, String key, Object value)
    {
       // Search for a simple method
-      if (applyMethod(cl, target, null, key, value))
+      if (searchAndRunMethod(cl, target, null, key, value))
       {
          return true;
       }
       
       // Search for a set method
-      if (applyMethod(cl, target, "set", key, value))
+      if (searchAndRunMethod(cl, target, "set", key, value))
       {
          return true;
       }
       
       // Search for an add method
-      if (applyMethod(cl, target, "add", key, value))
+      if (searchAndRunMethod(cl, target, "add", key, value))
       {
          return true;
       }
@@ -632,6 +632,10 @@ public final class Manager
       {
          parm = Short.parseShort(value);
       }
+      else if (clazz == Boolean.class || clazz == boolean.class)
+      {
+         parm = Boolean.parseBoolean(value);
+      }
       else if (clazz == String.class)
       {
          parm = value;
@@ -684,6 +688,10 @@ public final class Manager
       {
          return true;
       }
+      else if (Boolean.class.isAssignableFrom(clazz))
+      {
+         return true;
+      }
       else if (String.class.isAssignableFrom(clazz))
       {
          return true;
@@ -698,7 +706,8 @@ public final class Manager
    // Private methods
    //========================================================================================================
    /**
-    * Apply a method w/one arg. This will search for a method whose name is constructed from arguments.
+    * Search a method w/one arg. This will search for a method whose name is constructed from arguments.
+    * If found, runs it.
     *
     * @param cl the class used to search for method
     * @param target the target object to apply method on
@@ -709,7 +718,7 @@ public final class Manager
     * @param value the value to give to the method.
     * @return true, if successful
     */
-   private static boolean applyMethod(Class<?> cl, Object target, String prefix,
+   private static boolean searchAndRunMethod(Class<?> cl, Object target, String prefix,
          String key, Object value)
    {
       try
@@ -770,7 +779,7 @@ public final class Manager
       Class<?> sup = cl.getSuperclass();
       if ((sup != null) && (! sup.equals(Object.class)))
       {
-         return applyMethod(sup, target, prefix, key, value);
+         return searchAndRunMethod(sup, target, prefix, key, value);
       }
       return false;
    }

@@ -12,6 +12,7 @@ import org.reflections.ReflectionUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Handler.
  */
@@ -23,6 +24,9 @@ public class Handler extends DefaultHandler
    
    /** The current object. */
    private Bundle currentBundle = null;
+   
+   /** The current object father. */
+   private Bundle superBundle = null;
    
    /** The errors. */
    private List<String> errors;
@@ -91,144 +95,15 @@ public class Handler extends DefaultHandler
          String qName, 
          Attributes atts)
    {
-      // store namespace if needed
-      Manager.addPackage(namespaceURI);
-
-      // store bundle of father.
-      fifo.addLast(currentBundle);
-      Bundle superBundle = currentBundle;
+      if (beginStartHandler(namespaceURI)) return;
+      if (xlayerStartHandler(localName, atts)) return;
+      if (methodStartHandler(localName)) return;
+      if (variableStartHandler(localName, atts)) return;
+      if (listStartHandler(localName)) return;
+      if (constantStartHandler (localName, atts)) return;
+      if (objectStartHandler (namespaceURI, localName, atts)) return;
       
-      // new bundle for current stage
-      currentBundle = new Bundle();
-      
-      // check chain validity
-      if (!superBundle.isValid())
-      {
-         currentBundle.setValid(false);
-         return;
-      }
-
-      // By default, working on same object
-      currentBundle.setObject(superBundle.getObject());
-      
-      // Placeholder, normally at document start.
-      if ("xlayer".equals(localName))
-      {
-         return;
-      }
-      
-      // include other file.
-      if ("include".equals(localName))
-      {
-         String filePath = atts.getValue("path");
-         includeLevel++;
-         Manager.parseFile(this, filePath);
-         return;
-      }
-
-      // Search for 'localName' as a method only if a field is not available.
-      if (Manager.searchField(superBundle.getObject(), localName) == null)
-      {
-         currentBundle.setInMethod(Manager.searchMethod(superBundle.getObject(), localName, -1));
-      }
-      else
-      {
-         currentBundle.setInMethod(null);
-      }
-
-      // Search if we should load a variable
-      String varAttr = atts.getValue("_variable");
-      if (varAttr != null)
-      {
-         Object varContent = Manager.getVariable(varAttr);
-         // invalid value
-         if (varContent == null)
-         {
-            currentBundle.setValid(false);
-            addError("Variable '" + varAttr + "' has no value.");
-            return;
-         }
-         currentBundle.setObject(varContent);
-      }
-      else if ("variable".equals(localName))
-      {
-         currentBundle.setObject(new Variable());
-         String name = atts.getValue("name");
-         if (name == null)
-         {
-            currentBundle.setValid(false);
-            addError("Invalid variable definition : no name given.");
-            return;
-         }
-         ((Variable)currentBundle.getObject()).name = name;
-         currentBundle.setInMethod(null);
-      }
-      else if ("list".equals(localName))
-      {
-         currentBundle.setObject(superBundle.getObject());
-         currentBundle.setInMethod("list");
-      }
-      else if ("constant".equals(localName))
-      {
-         String cstName = atts.getValue("name");
-         if (cstName == null)
-         {
-            currentBundle.setValid(false);
-            addError("Invalid constant definition : no constant name given.");
-            return;
-         }
-         String cstClass = atts.getValue("class");
-         if (cstClass == null)
-         {
-            currentBundle.setValid(false);
-            addError("Invalid constant definition : no class name given.");
-            return;
-         }
-         Class<?> cl = Manager.getKnownClass(cstClass);
-         if (cl == null)
-         {
-            currentBundle.setValid(false);
-            addError("Invalid constant definition : class " + cstClass + " not found.");
-            return;
-         }
-         try
-         {
-            currentBundle.setObject(cl.getField(cstName).get(null));
-         }
-         catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
-         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-      }
-      else if (currentBundle.isInMethod() == null)
-      {
-         Field field = Manager.searchField(superBundle.getObject(), localName);
-         if ((field != null) && (Manager.testPrimitive(field.getType())))
-         {
-            currentBundle.setObject(superBundle.getObject());
-         }
-         else
-         {
-            // Search for object class
-            String className = localName;
-            String classAttr = atts.getValue("_class");
-            if (classAttr != null)
-            {
-               className = classAttr;
-            }
-            if (Manager.verifyNotReserved(className))
-            {
-               Object newObject = Manager.getInstance(namespaceURI, className, atts);
-               if (newObject != null)
-               {
-                  currentBundle.setObject(newObject);
-               }
-            }
-         }
-      }
-
-      currentBundle.setMethName(qName);
+      currentBundle.setMethodName(qName);
    }
 
 /**
@@ -367,5 +242,237 @@ public class Handler extends DefaultHandler
    public void addError(String error)
    {
       this.errors.add(error);
+   }
+   
+   /**
+    * Begin start handler.
+    *
+    * @param namespace the namespace
+    * @return true, if successful
+    */
+   private boolean beginStartHandler(String namespace)
+   {
+      // store namespace if needed
+      Manager.addPackage(namespace);
+
+      // store bundle of father.
+      fifo.addLast(currentBundle);
+      superBundle = currentBundle;
+      
+      // new bundle for current stage
+      currentBundle = new Bundle();
+      
+      // check chain validity
+      if (!superBundle.isValid())
+      {
+         currentBundle.setValid(false);
+         return true;
+      }
+
+      // By default, working on same object
+      currentBundle.setObject(superBundle.getObject());
+      return false;
+   }
+   
+   /**
+    * Xlayer start handler.
+    *
+    * @param name the name
+    * @param atts the atts
+    * @return true, if successful
+    */
+   private boolean xlayerStartHandler(String name, Attributes atts)
+   {
+      // Placeholder, normally at document start.
+      if ("xlayer".equals(name))
+      {
+         return true;
+      }
+      
+      // include other file.
+      if ("include".equals(name))
+      {
+         String filePath = atts.getValue("path");
+         includeLevel++;
+         Manager.parseFile(this, filePath);
+         return true;
+      }
+      return false;
+   }
+   
+   /**
+    * Method start handler.
+    *
+    * @param name the name
+    * @return true, if successful
+    */
+   private boolean methodStartHandler(String name)
+   {
+      // Search for 'localName' as a method only if a field is not available.
+      if ((superBundle.getObject() != null) && (Manager.searchField(superBundle.getObject(), name) == null))
+      {
+         System.out.println("found method for '" + name +"' for class " + superBundle.getObject().getClass().getSimpleName());
+
+         currentBundle.setInMethod(Manager.searchMethod(superBundle.getObject(), name, -1));
+      }
+      else
+      {
+         currentBundle.setInMethod(null);
+      }
+      return false;
+   }
+   
+   /**
+    * Variable start handler.
+    *
+    * @param localName the local name
+    * @param atts the atts
+    * @return true, if successful
+    */
+   private boolean variableStartHandler(String localName, Attributes atts)
+   {
+      // Search if we should load a variable
+      String varAttr = atts.getValue("_variable");
+      if (varAttr != null)
+      {
+         Object varContent = Manager.getVariable(varAttr);
+         // invalid value
+         if (varContent == null)
+         {
+            currentBundle.setValid(false);
+            addError("Variable '" + varAttr + "' has no value.");
+            return true;
+         }
+         currentBundle.setObject(varContent);
+      }
+      else if ("variable".equals(localName))
+      {
+         currentBundle.setObject(new Variable());
+         String name = atts.getValue("name");
+         if (name == null)
+         {
+            currentBundle.setValid(false);
+            addError("Invalid variable definition : no name given.");
+            return true;
+         }
+         ((Variable)currentBundle.getObject()).name = name;
+         currentBundle.setInMethod(null);
+      }
+      else
+      {
+         return false;
+      }
+      currentBundle.setMethodName(localName);
+      return true;
+   }
+   
+   /**
+    * List start handler.
+    *
+    * @param localName the local name
+    * @return true, if successful
+    */
+   private boolean listStartHandler(String localName)
+   {
+      if ("list".equals(localName))
+      {
+         currentBundle.setObject(superBundle.getObject());
+         currentBundle.setInMethod("list");
+         currentBundle.setMethodName(localName);
+         return true;
+      }
+      return false;
+   }
+   
+   /**
+    * Constant start handler.
+    *
+    * @param localName the local name
+    * @param atts the atts
+    * @return true, if successful
+    */
+   private boolean constantStartHandler(String localName, Attributes atts)
+   {
+      if ("constant".equals(localName))
+      {
+         String cstName = atts.getValue("name");
+         if (cstName == null)
+         {
+            currentBundle.setValid(false);
+            addError("Invalid constant definition : no constant name given.");
+            return true;
+         }
+         String cstClass = atts.getValue("class");
+         if (cstClass == null)
+         {
+            currentBundle.setValid(false);
+            addError("Invalid constant definition : no class name given.");
+            return true;
+         }
+         Class<?> cl = Manager.getKnownClass(cstClass);
+         if (cl == null)
+         {
+            currentBundle.setValid(false);
+            addError("Invalid constant definition : class " + cstClass + " not found.");
+            return true;
+         }
+         try
+         {
+            currentBundle.setObject(cl.getField(cstName).get(null));
+         }
+         catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+         currentBundle.setMethodName(localName);
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Object start handler.
+    *
+    * @param namespace the namespace
+    * @param localName the local name
+    * @param atts the atts
+    * @return true, if successful
+    */
+   private boolean objectStartHandler(String namespace, String localName, Attributes atts)
+   {
+      if (currentBundle.isInMethod() == null)
+      {
+         Field field = null;
+         if (superBundle.getObject() != null)
+         {
+            field = Manager.searchField(superBundle.getObject(), localName);
+         }
+         if ((field != null) && (Manager.testPrimitive(field.getType())))
+         {
+            System.out.println("found field '" + localName +"' for class " + superBundle.getObject().getClass().getSimpleName());
+            currentBundle.setObject(superBundle.getObject());
+         }
+         else
+         {
+            // Search for object class
+            String className = localName;
+            String classAttr = atts.getValue("_class");
+            if (classAttr != null)
+            {
+               className = classAttr;
+            }
+            if (Manager.verifyNotReserved(className))
+            {
+               Object newObject = Manager.getInstance(namespace, className, atts);
+               if (newObject != null)
+               {
+                  System.out.println("created object from class '" + localName +"'");
+                  currentBundle.setObject(newObject);
+               }
+            }
+         }
+      }
+      return false;
    }
 }

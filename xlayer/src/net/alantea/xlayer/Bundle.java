@@ -98,17 +98,9 @@ public class Bundle
    }
 
    /**
-    * @return the methName
-    */
-   public String getMethName()
-   {
-      return methName;
-   }
-
-   /**
     * @param methName the methName to set
     */
-   public void setMethName(String methName)
+   public void setMethodName(String methName)
    {
       this.methName = methName;
    }

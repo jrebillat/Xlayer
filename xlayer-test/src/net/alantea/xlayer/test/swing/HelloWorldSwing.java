@@ -1,4 +1,8 @@
 package net.alantea.xlayer.test.swing;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 /*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
@@ -47,7 +51,6 @@ package net.alantea.xlayer.test.swing;
 /*
  * HelloWorldSwing.java requires no other files. 
  */
-import javax.swing.*;        
 
 public class HelloWorldSwing {
     /**
