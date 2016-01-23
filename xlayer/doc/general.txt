@@ -2,7 +2,7 @@ The concept is to parse an XML file describing a set of objects creation and ass
 
 There is a master object that will contain all the content assembled.
 
-There must be a root element.
+As for all XML files, there must be a root element.
 <root>
 </root>
 
@@ -14,7 +14,11 @@ The root element may have namespaces definitions. This definitions will associat
 package names :
 <xlayer xmlns:tst='net.alantea.hypra.test.raw'>
 </xlayer>
-=> the pacakge 'net.alantea.hypra.test.raw' will be registered and associated with 'tst:' prefix.
+=> the package 'net.alantea.hypra.test.raw' will be associated with 'tst:' prefix. If used in file
+it will be registered.
+
+For registring a package not to be used as namspace, use :
+<package name='my.package.path'/>
 
 an element may be a new object to be created, a simple value, a list or a method.
 
@@ -32,6 +36,9 @@ will contain the root element after parsing :
 
 boolean Manager.parse(Object top, String xmlString);
 boolean Manager.parse(Object top, Reader xmlFile);
+
+You may also just use the net.alantea.xlayer.Run class :
+   java (add your class path) net.alantea.xlayer.Run myfile.xml
 
 The boolean return indicates if parsing was successful. Future releases will offer more information... 
 
@@ -77,3 +84,11 @@ lists may be created with the "list" keycode:
  <integer>3</integer>
  <integer>4</integer>
 </list>
+
+Anywhere where some kind of method may be replaced with a script (like for ActionListener in awt) you may
+replace the call to an instance with the keyword <script as='my.class.to.replace'>, like :
+<addActionListener>
+   <script as="ActionListener">
+      print('Hello world');
+   </script>
+</addActionListener>

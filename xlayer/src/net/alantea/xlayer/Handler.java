@@ -1,5 +1,6 @@
 package net.alantea.xlayer;
 
+import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,11 +11,11 @@ import java.util.Set;
 
 import org.reflections.ReflectionUtils;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Handler.
+ * Handler for Xlayer parsing.
  */
 public class Handler extends DefaultHandler
 {
@@ -47,6 +48,8 @@ public class Handler extends DefaultHandler
       super();
       currentBundle = new Bundle();
       currentBundle.setObject(root);
+      
+      // Initiate error list if at top level parsing only
       if (includeLevel <= 0)
       {
          errors = new ArrayList<>();
@@ -59,7 +62,16 @@ public class Handler extends DefaultHandler
    @Override
    public void startDocument()
    {
+      // nothing so far
    }
+
+   @Override
+   public void processingInstruction (String target, String data)
+         throws SAXException
+   {
+      // nothing so far
+   }
+
 
    /**
     * Data actions.
@@ -82,7 +94,7 @@ public class Handler extends DefaultHandler
    }
    
    /**
-    * Actions à réaliser lors de la détection d'un nouvel élément.
+    * Actions to do when starting a new element.
     *
     * @param namespaceURI the namespace uri
     * @param localName the local name
@@ -107,7 +119,7 @@ public class Handler extends DefaultHandler
    }
 
 /**
-    * Actions à réaliser lors de la détection de la fin d'un élément.
+    * Actions to do when ending an element.
     *
     * @param uri the uri
     * @param localName the local name
@@ -129,36 +141,59 @@ public class Handler extends DefaultHandler
          return;
       }
 
-      // include other file.
+      // include another file.
       if ("include".equals(localName))
       {
          includeLevel--;
          return;
       }
       
+      // current state is erroneous
       if (!innerBundle.isValid())
       {
          return;
       }
+      
+      // Scripted Placeholder.
+      if ("script".equals(localName))
+      {
+         String replaced = innerBundle.getMethodName();
+         String script = (String) innerBundle.getObject();
 
+         Object obj = new ScriptedProxy(script).as(Manager.searchClass("", replaced));
+         currentBundle.addParm(obj);
+         return;
+      }
+      
+      // Add package : done at start.
+      if ("package".equals(localName))
+      {
+         return;
+      }
+
+      // we have got a variable
       if (innerBundle.getObject() instanceof Variable)
       {
          return;
       }
+      // parsing a variable
       else if (currentBundle.getObject() instanceof Variable)
       {
          ((Variable) currentBundle.getObject()).content(innerBundle.getObject());
          Manager.addVariable((Variable)currentBundle.getObject());
       }
+      // parsing a constant
       else if ("constant".equals(localName))
       {
          currentBundle.setObject(innerBundle.getObject());
          currentBundle.addParm(innerBundle.getObject());
       }
+      // parsing a list
       else if ("list".equals(innerBundle.getInMethod()))
       {
          currentBundle.addParm(innerBundle.getParms());
       }
+      // coming out of a method
       else if (innerBundle.getInMethod() != null)
       {
          // end of method definition : execute it with arguments
@@ -169,6 +204,7 @@ public class Handler extends DefaultHandler
          }
          else
          {
+            // store result for upper usage
             if (ret.isNonvoid())
             {
                innerBundle.setObject(ret.getValue());
@@ -176,11 +212,13 @@ public class Handler extends DefaultHandler
             }
          }
       }
+      // currently in a method parameter
       else if (currentBundle.getInMethod() != null)
       {
          // Defining an object in a method : add object to argument list
          currentBundle.addParm(innerBundle.getObject());
       }
+      // parsing an object
       else if (currentBundle.getObject() != null)
       {
          // Object in Object : try to set directly object as attribute.
@@ -188,40 +226,30 @@ public class Handler extends DefaultHandler
                innerBundle.getMethodName(), innerBundle.getObject());
          if (!done)
          {
-            // try using adding the object (ex: for use for adding AWT elements in a Container)
-            Set<Method> meths = ReflectionUtils.getAllMethods(currentBundle.getObject().getClass(),
-                  ReflectionUtils.withName("add"), ReflectionUtils.withParametersCount(1));
-            if (!meths.isEmpty())
+            boolean ret = Manager.addObjectInObject(currentBundle.getObject(), innerBundle.getObject());
+            if (!ret)
             {
-               try
-               {
-                  meths.toArray(new Method[0])[0].invoke(currentBundle.getObject(), innerBundle.getObject());
-               }
-               catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-               {
-                  addError("Error concerning " + innerBundle.getMethodName() + ".");
-               }
+               addError("Error concerning " + innerBundle.getMethodName() + ".");
             }
          }
       }
    }
 
    /**
-    * Actions à réaliser lors de la fin du document XML.
+    * Actions when ending XML document.
     */
    @Override
    public void endDocument()
    {
-      // TODO : add possibility that root element of XML may be a method.
-      if (includeLevel <= 0)
-      {
-         System.out.println("------- Error output -------");
-         for (String str : getErrors())
-         {
-            System.out.println(str);
-         }
-         System.out.println("----------------------------");
-      }
+//      if (includeLevel <= 0)
+//      {
+//         System.out.println("------- Error output -------");
+//         for (String str : getErrors())
+//         {
+//            System.out.println(str);
+//         }
+//         System.out.println("----------------------------");
+//      }
    }
 
    /**
@@ -286,6 +314,21 @@ public class Handler extends DefaultHandler
       // Placeholder, normally at document start.
       if ("xlayer".equals(name))
       {
+         return true;
+      }
+      
+      // Add package.
+      if ("package".equals(name))
+      {
+         Manager.addPackage(atts.getValue("name"));
+         return true;
+      }
+      
+      // Scripted Placeholder.
+      if ("script".equals(name))
+      {
+         currentBundle.setMethodName(atts.getValue("as"));
+         System.out.println(currentBundle.getMethodName());
          return true;
       }
       
@@ -422,8 +465,10 @@ public class Handler extends DefaultHandler
          }
          catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            currentBundle.setValid(false);
+            addError("Invalid constant definition : class " + cstClass + " generates exception.");
+            return true;
          }
          currentBundle.setMethodName(localName);
          return true;

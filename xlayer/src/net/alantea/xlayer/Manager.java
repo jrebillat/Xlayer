@@ -67,11 +67,17 @@ public final class Manager
     */
    public static void addPackage(String pack)
    {
+      if ((pack == null) || (pack.trim().isEmpty()))
+      {
+         return;
+      }
+      
       // do not do it twice !
       if (systemPackages.contains(pack))
       {
          return;
       }
+      System.out.println("adding pack : " + pack);
       // use reflections to find content
       Reflections reflections = new Reflections(pack, new SubTypesScanner(false));
       Set<Class<? extends Object>> allClasses = reflections.getSubTypesOf(Object.class);
@@ -110,7 +116,7 @@ public final class Manager
     * @param text the text containing the XML
     * @return true, if successful
     */
-   public static boolean parse(Object root, String text)
+   public static List<String> parse(Object root, String text)
    {
       return parse(root, new StringReader(text));
    }
@@ -122,7 +128,19 @@ public final class Manager
     * @param path the file path containing the XML
     * @return true, if successful
     */
-   public static boolean parseFile(Object root, String path)
+   public static List<String> parseFile(String path)
+   {
+      return parseFile(new Handler(null), path);
+   }
+
+   /**
+    * Parses the file.
+    *
+    * @param root the root object
+    * @param path the file path containing the XML
+    * @return true, if successful
+    */
+   public static List<String> parseFile(Object root, String path)
    {
       return parseFile(new Handler(root), path);
    }
@@ -134,7 +152,7 @@ public final class Manager
     * @param path the file path containing the XML
     * @return true, if successful
     */
-   static boolean parseFile(Handler handler, String path)
+   static List<String> parseFile(Handler handler, String path)
    {
       try
       {
@@ -142,10 +160,10 @@ public final class Manager
       }
       catch (FileNotFoundException e)
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         List<String> errors = new ArrayList<>();
+         errors.add("File not found : " + path);
+         return errors;
       }
-      return false;
    }
 
    /**
@@ -155,7 +173,7 @@ public final class Manager
     * @param reader the reader to get the XML from
     * @return true, if successful
     */
-   public static boolean parse(Object root, Reader reader)
+   public static List<String> parse(Object root, Reader reader)
    {
       return parse(new Handler(root), reader);
    }
@@ -167,12 +185,13 @@ public final class Manager
     * @param reader the reader to get the XML from
     * @return true, if successful
     */
-   static boolean parse(Handler handler, Reader reader)
+   static List<String> parse(Handler handler, Reader reader)
    {
       try
       {
          SAXParserFactory spf = SAXParserFactory.newInstance();
          spf.setNamespaceAware(true);
+         spf.setXIncludeAware(true);
          SAXParser saxParser = spf.newSAXParser();
          
          XMLReader xmlReader = saxParser.getXMLReader();
@@ -182,9 +201,11 @@ public final class Manager
       }
       catch (SAXException | IOException | ParserConfigurationException e)
       {
-         return false;
+         List<String> errors = new ArrayList<>();
+         errors.add("Parsing error : " + e.getMessage());
+         return errors;
       }
-      return true;
+      return handler.getErrors();
    }
 
    /**
@@ -221,7 +242,7 @@ public final class Manager
     * @return the information
     */
    @SuppressWarnings("unchecked")
-   static MethodReturnedInformation applyMethod(Object target, String methName, List<Object> objects)
+   public static MethodReturnedInformation applyMethod(Object target, String methName, List<Object> objects)
    {
       MethodReturnedInformation info = new MethodReturnedInformation();
       boolean oneArg = false;
@@ -842,6 +863,44 @@ public final class Manager
       catch (SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
       {
          // nothing to do here...
+      }
+      return false;
+   }
+   
+   /**
+    * Adds the child object in the parent object.
+    *
+    * @param parent the parent
+    * @param child the child
+    * @return true, if successful
+    */
+   public static boolean addObjectInObject(Object parent, Object child)
+   {
+      // try using adding the object (ex: for use for adding AWT elements in a Container)
+      @SuppressWarnings("unchecked")
+      Set<Method> meths = ReflectionUtils.getAllMethods(parent.getClass(),
+            ReflectionUtils.withName("add"), ReflectionUtils.withParametersCount(1));
+      if (!meths.isEmpty())
+      {
+         for (Method method : meths)
+         {
+            boolean found = false;
+            Class<?>[] pcls = method.getParameterTypes();
+            Class<?> pcl = pcls[0];
+            if (pcl.isAssignableFrom(child.getClass()))
+            {
+               try
+               {
+                  method.invoke(parent, child);
+               }
+               catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+               {
+                  return false;
+               }
+               break;
+            }
+         }
+         return true;
       }
       return false;
    }

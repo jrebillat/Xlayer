@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
-<xlayer xmlns:swg='javax.swing'>
+<xlayer xmlns:awt='toot' xmlns:swg='javax.swing'>
+	<package name="java.awt.event" />
 	<swg:jFrame title="HelloWorldSwing">
 		<defaultCloseOperation>
 			<constant class='javax.swing.JFrame' name='EXIT_ON_CLOSE' />
 		</defaultCloseOperation>
 		<jPanel>
 			<jLabel>
-				<text>Hello World...</text>
+				<text>Hello World too...</text>
 			</jLabel>
 			<jButton name='mybutton1'>
 				<text>Hello World too...</text>
 				<addActionListener>
-					<ScriptedActionListener>
-						<script>print('hello world');</script>
-					</ScriptedActionListener>
+					<script as="ActionListener">
+						print('Yes, hello world');
+					</script>
 				</addActionListener>
 			</jButton>
 		</jPanel>

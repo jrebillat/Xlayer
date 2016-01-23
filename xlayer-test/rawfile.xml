@@ -2,6 +2,7 @@
 <xlayer>
 	<truc machin='666' xmlns:sy='net.alantea.hypra.test.raw'>
 		<machin>69</machin>
+		<?test bidule?>
 		<sy:bidule></sy:bidule>
 		<bidule></bidule>
 		<packed></packed>
@@ -15,10 +16,6 @@
 		<variable name='toto'>
 			<bidule></bidule>
 		</variable>
-		<biduloide>
-			<bidule _variable='toto' />
-			<bidule2></bidule2>
-		</biduloide>
 		<variable name='titi'>
 			<integer>42</integer>
 		</variable>
