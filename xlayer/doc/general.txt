@@ -52,6 +52,7 @@ Note that methods may not be nested.
 When this is an object, it must be a bean (with an empty constructor) :
 <myObject _class='classname'></myObject>
 The "_class" attribute is optional. If not given, the searched class will be "MyObject".
+You can also put the object in a variable using the "_set" attribute.
 
 If the container for the object is another object, then a search through the class hierarchy 
 (all steps for a class, then same for superclass) will be made :
@@ -85,10 +86,16 @@ lists may be created with the "list" keycode:
  <integer>4</integer>
 </list>
 
-Anywhere where some kind of method may be replaced with a script (like for ActionListener in awt) you may
-replace the call to an instance with the keyword <script as='my.class.to.replace'>, like :
+Anywhere where some kind of interface may be replaced with a script (like for ActionListener in awt) you may
+replace the call to an instance with the keyword <script as='my.interface.to.replace'>, like :
 <addActionListener>
    <script as="ActionListener">
       print('Hello world');
    </script>
 </addActionListener>
+
+Scripts may access all classes, even Manager and get Xlayer-defined variables using :
+   var Manager = Java.type("net.alantea.xlayer.Manager");
+   var val = parseInt(Manager.getVariable('myvariable'));
+The two javascriptvariables "methodName" and "methodArguments" are containing the method name called and the
+list of arguments.

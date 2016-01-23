@@ -3,6 +3,7 @@ package net.alantea.xlayer;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -21,10 +22,17 @@ public class ScriptedProxy
       this.script = script;
    }
 
-   public void doIt(Object object)
+   public void doIt(Method method, Object[] objects)
    {
       try
       {
+         Map<String, Object> variables = Manager.getVariables();
+         for (String key : variables.keySet())
+         {
+            engine.put(key, variables.get(key));
+         }
+         engine.put("methodName", method.getName());
+         engine.put("methodArguments", objects);
          engine.eval(script);
       }
       catch (ScriptException e)
@@ -57,7 +65,7 @@ class InterfaceBridgeProxy implements InvocationHandler {
    }
 
    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
-      ((ScriptedProxy)(proxee)).doIt(null);
+      ((ScriptedProxy)(proxee)).doIt(method, args);
       return null;
    }
 }

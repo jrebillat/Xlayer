@@ -1,19 +1,28 @@
 <?xml version="1.0"?>
-<xlayer xmlns:awt='toot' xmlns:swg='javax.swing'>
+<xlayer xmlns:swg='javax.swing'>
 	<package name="java.awt.event" />
 	<swg:jFrame title="HelloWorldSwing">
 		<defaultCloseOperation>
 			<constant class='javax.swing.JFrame' name='EXIT_ON_CLOSE' />
 		</defaultCloseOperation>
 		<jPanel>
-			<jLabel>
+			<jLabel _put='myLabel'>
 				<text>Hello World too...</text>
 			</jLabel>
+		<variable name='intvar'>42</variable>
 			<jButton name='mybutton1'>
 				<text>Hello World too...</text>
 				<addActionListener>
 					<script as="ActionListener">
-						print('Yes, hello world');
+					  if (methodName == "actionPerformed")
+					  {
+					    var Manager = Java.type("net.alantea.xlayer.Manager");
+					    var val = parseInt(Manager.getVariable('intvar'));
+					    print('Yes, hello world ' + val);
+					    Manager.setVariable('intvar', val + 1);
+					    var label = Manager.getVariable('myLabel');
+					    label.setText('Yes, hello world ' + val);
+					  }
 					</script>
 				</addActionListener>
 			</jButton>

@@ -13,6 +13,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,6 @@ public final class Manager
       {
          return;
       }
-      System.out.println("adding pack : " + pack);
       // use reflections to find content
       Reflections reflections = new Reflections(pack, new SubTypesScanner(false));
       Set<Class<? extends Object>> allClasses = reflections.getSubTypesOf(Object.class);
@@ -209,12 +209,12 @@ public final class Manager
    }
 
    /**
-    * Adds a variable.
+    * Set a variable.
     *
     * @param name the name
     * @param content the content
     */
-   public static void addVariable(String name, Object content)
+   public static void setVariable(String name, Object content)
    {
       variables .put(name, content);
    }
@@ -228,6 +228,16 @@ public final class Manager
    public static Object getVariable(String name)
    {
       return variables .get(name);
+   }
+
+   /**
+    * Get the variables map.
+    *
+    * @return the variable map
+    */
+   public static Map<String, Object> getVariables()
+   {
+      return Collections.unmodifiableMap(variables);
    }
 
    //========================================================================================================
@@ -247,12 +257,9 @@ public final class Manager
       MethodReturnedInformation info = new MethodReturnedInformation();
       boolean oneArg = false;
       List<Class<?>> parmClasses = new ArrayList<>();
-      System.out.println("applying method : " + methName);
-      System.out.println("  " + objects.size() + " parameters");
       for (Object object : objects)
       {
          parmClasses.add(object.getClass());
-         System.out.println("   with arg : " + object.getClass().getSimpleName() + " " + object.toString());
       }
       Set<Method> methods = ReflectionUtils.getAllMethods(target.getClass(),
             ReflectionUtils.withName(methName),
@@ -468,7 +475,6 @@ public final class Manager
       {
          clName = namespace + "." + clName;
       }
-      System.out.println("searching for " + clName);
       Class<?> cl = getKnownClass(clName);
 
       if (cl == null)
@@ -884,7 +890,6 @@ public final class Manager
       {
          for (Method method : meths)
          {
-            boolean found = false;
             Class<?>[] pcls = method.getParameterTypes();
             Class<?> pcl = pcls[0];
             if (pcl.isAssignableFrom(child.getClass()))

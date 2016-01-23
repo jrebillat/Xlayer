@@ -1,15 +1,10 @@
 package net.alantea.xlayer;
 
-import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import org.reflections.ReflectionUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -35,6 +30,9 @@ public class Handler extends DefaultHandler
    /** The include level. */
    private int includeLevel = 0;
    
+   /** concatenated characters. */
+   private String concatChars;
+   
    //================================================================================
    // Base methods
    //-------------
@@ -54,6 +52,7 @@ public class Handler extends DefaultHandler
       {
          errors = new ArrayList<>();
       }
+      concatChars = "";
    }
 
    /**
@@ -88,7 +87,8 @@ public class Handler extends DefaultHandler
       str = str.trim();
       if (!str.isEmpty())
       {
-         currentBundle.setObject(str);
+         concatChars += str;
+         currentBundle.setObject(concatChars);
          currentBundle.addParm(str);
       }
    }
@@ -107,6 +107,7 @@ public class Handler extends DefaultHandler
          String qName, 
          Attributes atts)
    {
+      concatChars = "";
       if (beginStartHandler(namespaceURI)) return;
       if (xlayerStartHandler(localName, atts)) return;
       if (methodStartHandler(localName)) return;
@@ -125,7 +126,6 @@ public class Handler extends DefaultHandler
     * @param localName the local name
     * @param qName the q name
     */
-   @SuppressWarnings("unchecked")
    @Override
    public void endElement(String uri, String localName,
          String qName)
@@ -168,6 +168,13 @@ public class Handler extends DefaultHandler
       // Add package : done at start.
       if ("package".equals(localName))
       {
+         return;
+      }
+      
+      // Add variable.
+      if ("variable".equals(localName))
+      {
+         Manager.setVariable(innerBundle.getAddition(), innerBundle.getObject());
          return;
       }
 
@@ -241,15 +248,7 @@ public class Handler extends DefaultHandler
    @Override
    public void endDocument()
    {
-//      if (includeLevel <= 0)
-//      {
-//         System.out.println("------- Error output -------");
-//         for (String str : getErrors())
-//         {
-//            System.out.println(str);
-//         }
-//         System.out.println("----------------------------");
-//      }
+      // nothing so far.
    }
 
    /**
@@ -328,7 +327,6 @@ public class Handler extends DefaultHandler
       if ("script".equals(name))
       {
          currentBundle.setMethodName(atts.getValue("as"));
-         System.out.println(currentBundle.getMethodName());
          return true;
       }
       
@@ -354,8 +352,6 @@ public class Handler extends DefaultHandler
       // Search for 'localName' as a method only if a field is not available.
       if ((superBundle.getObject() != null) && (Manager.searchField(superBundle.getObject(), name) == null))
       {
-         System.out.println("found method for '" + name +"' for class " + superBundle.getObject().getClass().getSimpleName());
-
          currentBundle.setInMethod(Manager.searchMethod(superBundle.getObject(), name, -1));
       }
       else
@@ -399,7 +395,7 @@ public class Handler extends DefaultHandler
             return true;
          }
          ((Variable)currentBundle.getObject()).name = name;
-         currentBundle.setInMethod(null);
+         currentBundle.setAddition(name);
       }
       else
       {
@@ -495,7 +491,6 @@ public class Handler extends DefaultHandler
          }
          if ((field != null) && (Manager.testPrimitive(field.getType())))
          {
-            System.out.println("found field '" + localName +"' for class " + superBundle.getObject().getClass().getSimpleName());
             currentBundle.setObject(superBundle.getObject());
          }
          else
@@ -512,8 +507,12 @@ public class Handler extends DefaultHandler
                Object newObject = Manager.getInstance(namespace, className, atts);
                if (newObject != null)
                {
-                  System.out.println("created object from class '" + localName +"'");
                   currentBundle.setObject(newObject);
+                  String varName = atts.getValue("_put");
+                  if (varName != null)
+                  {
+                     Manager.setVariable(varName, newObject);
+                  }
                }
             }
          }

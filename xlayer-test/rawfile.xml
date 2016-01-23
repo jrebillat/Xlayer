@@ -11,11 +11,11 @@
 			<bidule></bidule>
 			<bidule></bidule>
 			<bidule></bidule>
-			<bidule></bidule>
+			<bidule _put="toto"></bidule>
 		</addAll>
-		<variable name='toto'>
+		<!-- variable name='toto'>
 			<bidule></bidule>
-		</variable>
+		</variable -->
 		<variable name='titi'>
 			<integer>42</integer>
 		</variable>

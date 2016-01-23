@@ -18,6 +18,9 @@ public class Bundle
    /** If we are in a method. */
    private String inMethod;
    
+   /** The additionnal info. */
+   private String addition;
+   
    /** The parameters for method. */
    private List<Object> parms = new ArrayList<>();
    
@@ -147,5 +150,25 @@ public class Bundle
    public void setValid(boolean valid)
    {
       this.valid = valid;
+   }
+
+   /**
+    * Gets the addition.
+    *
+    * @return the addition
+    */
+   public String getAddition()
+   {
+      return addition;
+   }
+
+   /**
+    * Sets the addition.
+    *
+    * @param addition the new addition
+    */
+   public void setAddition(String addition)
+   {
+      this.addition = addition;
    }
 }
