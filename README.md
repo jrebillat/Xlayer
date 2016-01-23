@@ -1,7 +1,18 @@
-# Xlayer
-This little package is just meant to add an XML layer over any java packages.
-It will let you use XML to describe your work - like FXML does for JavaFX.
+# XLayer quick documentation
 
-See : http://www.alantea.net/xlayer (coming soon)
+## Concept
+The idea behind XLayer is to enable everyone to parse an XML file describing a set of java objects creation and assembly along with method calls and variable management.
 
+## Document Syntax
 
+### Document root object
+
+As for all XML files, there must be a root element.
+```xml
+<root>
+</root>
+```
+
+This root element may be the keycode "xlayer", that will be ignored - but is necessary for XML.
+<xlayer>
+</xlayer>
