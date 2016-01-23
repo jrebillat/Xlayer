@@ -147,3 +147,41 @@ get Xlayer-defined variables using :
 The two javascriptvariables "methodName" and "methodArguments" are containing the method name called and the
 list of arguments.
 The last value in script is returned from the method if it is compatible with the type excepted in the interface
+
+# Example
+a simple example of a swing frame, runnable with the `Run`class, is :
+```java
+<?xml version="1.0"?>
+<xlayer xmlns:swg='javax.swing'>
+	<package name="java.awt.event" />
+	<swg:jFrame title="HelloWorldSwing">
+		<defaultCloseOperation>
+			<constant class='javax.swing.JFrame' name='EXIT_ON_CLOSE' />
+		</defaultCloseOperation>
+		<jPanel>
+			<jLabel _put='myLabel'>
+				<text>Hello World too...</text>
+			</jLabel>
+		<variable name='intvar'>42</variable>
+			<jButton name='mybutton1'>
+				<text>Hello World too...</text>
+				<addActionListener>
+					<script as="ActionListener">
+					  if (methodName == "actionPerformed")
+					  {
+					    var Manager = Java.type("net.alantea.xlayer.Manager");
+					    var val = parseInt(Manager.getVariable('intvar'));
+					    print('Yes, hello world ' + val);
+					    Manager.setVariable('intvar', val + 1);
+					    var label = Manager.getVariable('myLabel');
+					    label.setText('Yes, hello world ' + val);
+					  }
+					</script>
+				</addActionListener>
+			</jButton>
+		</jPanel>
+		<pack />
+		<visible>true</visible>
+	</swg:jFrame>
+</xlayer>
+```
