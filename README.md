@@ -150,7 +150,7 @@ The last value in script is returned from the method if it is compatible with th
 
 # Example
 a simple example of a swing frame, runnable with the `Run`class, is :
-```java
+```xml
 <?xml version="1.0"?>
 <xlayer xmlns:swg='javax.swing'>
 	<package name="java.awt.event" />
