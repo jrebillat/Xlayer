@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <xlayer xmlns:swg='javax.swing'>
-	<package name="java.awt.event" />
+	<?package java.awt.event?>
 	<swg:jFrame title="HelloWorldSwing">
 		<defaultCloseOperation>
 			<constant class='javax.swing.JFrame' name='EXIT_ON_CLOSE' />

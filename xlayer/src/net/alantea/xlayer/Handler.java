@@ -67,8 +67,12 @@ public class Handler extends DefaultHandler
    @Override
    public void processingInstruction (String target, String data)
          throws SAXException
-   {
-      // nothing so far
+   {      
+      // Add package.
+      if ("package".equals(target))
+      {
+         Manager.addPackage(data);
+      }
    }
 
 
@@ -162,12 +166,6 @@ public class Handler extends DefaultHandler
 
          Object obj = new ScriptedProxy(script).as(Manager.searchClass("", replaced));
          currentBundle.addParm(obj);
-         return;
-      }
-      
-      // Add package : done at start.
-      if ("package".equals(localName))
-      {
          return;
       }
       
@@ -313,13 +311,6 @@ public class Handler extends DefaultHandler
       // Placeholder, normally at document start.
       if ("xlayer".equals(name))
       {
-         return true;
-      }
-      
-      // Add package.
-      if ("package".equals(name))
-      {
-         Manager.addPackage(atts.getValue("name"));
          return true;
       }
       

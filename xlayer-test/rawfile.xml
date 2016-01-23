@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <xlayer>
-	<truc machin='666' xmlns:sy='net.alantea.hypra.test.raw'>
+    <?package net.alantea.xlayer.test.raw?>
+	<truc machin='666'>
 		<machin>69</machin>
-		<?test bidule?>
-		<sy:bidule></sy:bidule>
+		<bidule></bidule>
 		<bidule></bidule>
 		<packed></packed>
 		<packed></packed>
