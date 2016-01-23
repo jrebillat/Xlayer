@@ -94,8 +94,10 @@ replace the call to an instance with the keyword <script as='my.interface.to.rep
    </script>
 </addActionListener>
 
-Scripts may access all classes, even Manager and get Xlayer-defined variables using :
+Scripts are based on java-included javascript engine, so theymay access all java classes, even Manager and
+get Xlayer-defined variables using :
    var Manager = Java.type("net.alantea.xlayer.Manager");
    var val = parseInt(Manager.getVariable('myvariable'));
 The two javascriptvariables "methodName" and "methodArguments" are containing the method name called and the
 list of arguments.
+The last value in script is returned from the method if it is compatible with the type excepted in the interface

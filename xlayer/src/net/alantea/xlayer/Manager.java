@@ -252,7 +252,7 @@ public final class Manager
     * @return the information
     */
    @SuppressWarnings("unchecked")
-   public static MethodReturnedInformation applyMethod(Object target, String methName, List<Object> objects)
+   static MethodReturnedInformation applyMethod(Object target, String methName, List<Object> objects)
    {
       MethodReturnedInformation info = new MethodReturnedInformation();
       boolean oneArg = false;
@@ -880,7 +880,7 @@ public final class Manager
     * @param child the child
     * @return true, if successful
     */
-   public static boolean addObjectInObject(Object parent, Object child)
+   static boolean addObjectInObject(Object parent, Object child)
    {
       // try using adding the object (ex: for use for adding AWT elements in a Container)
       @SuppressWarnings("unchecked")
