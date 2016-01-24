@@ -96,25 +96,25 @@ void Manager.addClass(String pack);
 
 ## What can be an element ?
 A element can be :
-1. An object class to be created
-1. a field in the parent object
-1. A method applying to the parent object
-1. A list of elements
-1. A value (a String or a simple type)
-1. A constant from a class
-1. Xlayer keywords
++ An object class to be created
++ a field in the parent object
++ A method applying to the parent object
++ A list of elements
++ A value (a String or a simple type)
++ A constant from a class
++ Xlayer keywords
 
 ## Tree registration
 
 As any XML element should be registered somewhere in the parent object, there is a procedure to search how to put the result of the element parsing inside its parent. 
 
 If the container for the object is another object, then a search through the class hierarchy (all steps for the class of the object, then same for superclass, and again until _Object_ class) will be made :
-1. search for a method "myObject(_class_ object)" in container
-2. search for a method "setMyObject(_class_ object)" in container
-3. search for a method "addMyObject(_class_ object)" in container
-4. search for a field named _myObject_ in container with assignable _class_
-5. search for a method "get_MyObject_s()" in container and an then search a "add(_class_ object)" in the returned type.
-6. search for a method "add(_class_ object)" in container
++ search for a method "myObject(_class_ object)" in container
++ search for a method "setMyObject(_class_ object)" in container
++ search for a method "addMyObject(_class_ object)" in container
++ search for a field named _myObject_ in container with assignable _class_
++ search for a method "get_MyObject_s()" in container and an then search a "add(_class_ object)" in the returned type.
++ search for a method "add(_class_ object)" in container
 
 The result is also put in a list of all elements in parent - used for methods, see below.
 
@@ -231,11 +231,10 @@ They may also get Xlayer-defined variables using :
    var val = parseInt(Manager.getVariable('myvariable'));
 ```
 
-## Example
 The two special javascript variables _methodName_ and _methodArguments_ are containing respectively the method name called and the list of the given argument objects.
 The last value in script is returned from the method if it is compatible with the type excepted in the interface
 
-
+## Example
 A simple example of a swing frame, runnable with the `Run`class, is :
 ```xml
 <?xml version="1.0"?>
