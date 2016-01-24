@@ -439,11 +439,11 @@ public class Handler extends DefaultHandler
             addError("Invalid constant definition : no class name given.");
             return true;
          }
-         Class<?> cl = Manager.getKnownClass(cstClass);
+         Class<?> cl = Manager.searchClass("", cstClass);
          if (cl == null)
          {
             currentBundle.setValid(false);
-            addError("Invalid constant definition : class " + cstClass + " not found.");
+            addError("Invalid constant definition : class  " + cstClass + " not found.");
             return true;
          }
          try

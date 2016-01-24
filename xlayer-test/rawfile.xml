@@ -22,4 +22,9 @@
 		<machin _variable='titi' />
 		<include path='rawsubfile.xml'/>
 	</truc>
+	<withEnum>
+	   <state>
+	      <constant class='net.alantea.xlayer.test.raw.WithEnum.State' name='OFF'/>
+	   </state>
+	</withEnum>
 </xlayer>

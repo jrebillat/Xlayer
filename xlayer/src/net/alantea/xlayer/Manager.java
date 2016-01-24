@@ -1,9 +1,12 @@
 package net.alantea.xlayer;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
@@ -143,6 +146,32 @@ public final class Manager
    public static List<String> parseFile(Object root, String path)
    {
       return parseFile(new Handler(root), path);
+   }
+
+   /**
+    * Parses the resource.
+    *
+    * @param root the root object
+    * @param path the resource path containing the XML
+    * @return true, if successful
+    */
+   public static List<String> parseResource(String path)
+   {
+      return parseFile(new Handler(null), path);
+   }
+
+   /**
+    * Parses the resource.
+    *
+    * @param root the root object
+    * @param path the resource path containing the XML
+    * @return true, if successful
+    */
+   public static List<String> parseResource(Object root, String path)
+   {
+      InputStream in = Object.class.getResourceAsStream(path); 
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      return parse(new Handler(root), reader);
    }
 
    /**
@@ -471,14 +500,18 @@ public final class Manager
     	  clName = name.substring(0, 1).toUpperCase() + name.substring(1);
       }
       
+      // add namespace
       if (!namespace.trim().isEmpty())
       {
          clName = namespace + "." + clName;
       }
+      
+      // search in already known classes
       Class<?> cl = getKnownClass(clName);
 
       if (cl == null)
       {
+         // Search for class itself
          try
          {
             cl = Class.forName(clName);
@@ -486,18 +519,24 @@ public final class Manager
          }
          catch (ClassNotFoundException e)
          {
-            // well, maybe a bad-formed name ?
-            cl = getKnownClass(name);
-            if (cl == null)
+            // well, maybe an inner class ?
+            if (clName.contains("."))
             {
-               try
+               String outerName = clName.substring(0, clName.lastIndexOf("."));
+               String innerName = clName.substring(clName.lastIndexOf(".") +1);
+               Class<?> outerClass = searchClass(namespace, outerName);
+               if (outerClass != null)
                {
-                  cl = Class.forName(name);
+                  Class<?>[] innerClasses = outerClass.getClasses();
+                  for (Class<?> innerClass : innerClasses)
+                  {
+                     if (innerClass.getSimpleName().equals(innerName))
+                     {
+                        cl = innerClass;
+                        break;
+                     }
+                  }
                   classes.put(clName, cl);
-               }
-               catch (ClassNotFoundException e1)
-               {
-                  // bad luck...
                }
             }
          }
