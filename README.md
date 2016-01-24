@@ -155,9 +155,10 @@ Simple values are easy to set : they are just text in their parent. The string i
   <text>Hello World !</text>
 </Label>
 ```
-Sometimes, it is not possible to do it so simply, as for list creation. You can also encapsulate it in an element of its type :
+Caution, it is not possible to do it so simply for list creation or when several arguments are needed. You then have to encapsulate it in an element of its type :
 ```xml
 <integer>22</integer>
+<integer>33</integer>
 <String>Toto</String>
 ```
 
