@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite">
+
+  <test name="package registration">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.PackageRegistrationTest" />
+    </classes>
+  </test>
+  
+  <test name="variable registration">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.VariableRegistrationTest" />
+    </classes>
+  </test>
+  
+  <test name="parsing">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.ParsingTest" />
+    </classes>
+  </test>
+  
+  <test name="Xml package registration">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLPackageRegistrationTest" />
+    </classes>
+  </test>
+  
+  <test name="Xml object creation">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLObjectCreationTest" />
+    </classes>
+  </test>
+  
+  <test name="Xml field setting">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLFieldSettingTest" />
+    </classes>
+  </test>
+  
+</suite>  	
