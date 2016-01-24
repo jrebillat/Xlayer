@@ -10,7 +10,10 @@ parsing of a document is done in Java code. A _Run_ class is available for runni
 In this case you are able to specify some information before parsing the file.
 
 ### Registring packages and classes
-By default, all classes from the jars in the class path are already registered. The ones that may not be registered are those in the system libraries (java.*, javax.* and so on).
+By default, all classes (including inner classes) from the jars in the class path are already registered. The ones that may not be registered are those in the system libraries (java.*, javax.* and so on).
+
+Be careful with classes with same name in different packages : they will overlap, only one will be registered - the one chosen is unpredictable. In this case, put the complete name for those classes.
+
 You may register packages or specific classes before parsing the XML file, using :
 ```java
 void Manager.addPackage(String pack);
