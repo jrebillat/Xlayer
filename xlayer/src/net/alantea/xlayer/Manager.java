@@ -39,33 +39,47 @@ import org.xml.sax.XMLReader;
  */
 public final class Manager
 {
-   
+
    /** The classes. */
    private static Map<String, Class<?>> classes = new HashMap<>();
-   
+
    /** The system packages. */
    private static List<String> systemPackages = new ArrayList<>();
 
    private static Map<String, Object> variables = new HashMap<>();
-   
+
    static
    {
       addPackage("net.alantea.xlayer");
       addPackage("java.lang");
    }
-   
+
    /**
     * Instantiates a new manager. No to be used.
     */
-   private Manager() {}
-   
-   //========================================================================================================
+   private Manager()
+   {
+   }
+
+   // ========================================================================================================
    // Public methods
-   //========================================================================================================
+   // ========================================================================================================
+
+   /**
+    * Clear all information.
+    */
+   public static void clearAll()
+   {
+      classes = new HashMap<>();
+      systemPackages = new ArrayList<>();
+      variables = new HashMap<>();
+      addPackage("net.alantea.xlayer");
+      addPackage("java.lang");
+   }
    
    /**
-    * Adds a package. The packages are scanned for classes used in parsing files.
-    * This will not override previously defined class names.
+    * Adds a package. The packages are scanned for classes used in parsing files. This will not
+    * override previously defined class names.
     *
     * @param pack the package to add.
     */
@@ -75,7 +89,7 @@ public final class Manager
       {
          return;
       }
-      
+
       // do not do it twice !
       if (systemPackages.contains(pack))
       {
@@ -84,27 +98,39 @@ public final class Manager
       // use reflections to find content
       Reflections reflections = new Reflections(pack, new SubTypesScanner(false));
       Set<Class<? extends Object>> allClasses = reflections.getSubTypesOf(Object.class);
-      
-      // Sometimes there is nothing found. This may mean there is no class in package. But usually, this
+
+      // Sometimes there is nothing found. This may mean there is no class in package. But usually,
+      // this
       // means in fact the package is in a system jar, not scanned by Reflections. Thus
       // we will use other means (slower) to get classes when necessary.
-       systemPackages.add(pack);
-      
+      systemPackages.add(pack);
+
       // Store found classes.
       for (Class<?> cl : allClasses)
       {
          if (classes.get(cl.getSimpleName()) == null)
          {
             classes.put(cl.getSimpleName(), cl);
+            addInnerClasses(cl);
          }
       }
    }
-   
+
+   private static void addInnerClasses(Class<?> mainClass)
+   {
+      Class<?>[] innerClasses = mainClass.getClasses();
+      for (Class<?> innerClass : innerClasses)
+      {
+         classes.put(innerClass.getSimpleName(), innerClass);
+         addInnerClasses(innerClass);
+      }
+   }
+
    /**
     * Adds a specific class. Override previous definition.
     *
     * @param className the class name to load
-    * @throws ClassNotFoundException 
+    * @throws ClassNotFoundException
     */
    public static void addClass(String className) throws ClassNotFoundException
    {
@@ -121,6 +147,12 @@ public final class Manager
     */
    public static List<String> parse(Object root, String text)
    {
+      if (text == null)
+      {
+         List<String> ret = new ArrayList<>();
+         ret.add("Null XML source");
+         return ret;
+      }
       return parse(root, new StringReader(text));
    }
 
@@ -169,7 +201,19 @@ public final class Manager
     */
    public static List<String> parseResource(Object root, String path)
    {
-      InputStream in = Object.class.getResourceAsStream(path); 
+      if (path == null)
+      {
+         List<String> ret = new ArrayList<>();
+         ret.add("Null XML source");
+         return ret;
+      }
+      InputStream in = Manager.class.getResourceAsStream(path);
+      if (in == null)
+      {
+         List<String> ret = new ArrayList<>();
+         ret.add("Invalid XML source");
+         return ret;
+      }
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       return parse(new Handler(root), reader);
    }
@@ -183,6 +227,12 @@ public final class Manager
     */
    static List<String> parseFile(Handler handler, String path)
    {
+      if (path == null)
+      {
+         List<String> ret = new ArrayList<>();
+         ret.add("Null XML source");
+         return ret;
+      }
       try
       {
          return parse(handler, new FileReader(new File(path)));
@@ -216,13 +266,19 @@ public final class Manager
     */
    static List<String> parse(Handler handler, Reader reader)
    {
+      if (reader == null)
+      {
+         List<String> ret = new ArrayList<>();
+         ret.add("Null XML source");
+         return ret;
+      }
       try
       {
          SAXParserFactory spf = SAXParserFactory.newInstance();
          spf.setNamespaceAware(true);
          spf.setXIncludeAware(true);
          SAXParser saxParser = spf.newSAXParser();
-         
+
          XMLReader xmlReader = saxParser.getXMLReader();
          xmlReader.setContentHandler(handler);
          InputSource inputSource = new InputSource(reader);
@@ -245,7 +301,7 @@ public final class Manager
     */
    public static void setVariable(String name, Object content)
    {
-      variables .put(name, content);
+      variables.put(name, content);
    }
 
    /**
@@ -256,7 +312,7 @@ public final class Manager
     */
    public static Object getVariable(String name)
    {
-      return variables .get(name);
+      return variables.get(name);
    }
 
    /**
@@ -269,9 +325,9 @@ public final class Manager
       return Collections.unmodifiableMap(variables);
    }
 
-   //========================================================================================================
+   // ========================================================================================================
    // Package methods
-   //========================================================================================================
+   // ========================================================================================================
    /**
     * Apply method.
     *
@@ -290,8 +346,7 @@ public final class Manager
       {
          parmClasses.add(object.getClass());
       }
-      Set<Method> methods = ReflectionUtils.getAllMethods(target.getClass(),
-            ReflectionUtils.withName(methName),
+      Set<Method> methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
             ReflectionUtils.withParametersCount(objects.size()));
 
       Method meth = null;
@@ -314,7 +369,7 @@ public final class Manager
                      break;
                   }
                }
-               
+
                if (found)
                {
                   meth = method;
@@ -327,15 +382,14 @@ public final class Manager
       {
          // search for one List parameter
          oneArg = true;
-         methods = ReflectionUtils.getAllMethods(target.getClass(),
-                   ReflectionUtils.withName(methName),
-                  ReflectionUtils.withParametersCount(1));
+         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
+               ReflectionUtils.withParametersCount(1));
          if (!methods.isEmpty())
          {
             meth = methods.toArray(new Method[0])[0];
          }
       }
-        
+
       if (meth != null)
       {
          try
@@ -403,35 +457,31 @@ public final class Manager
       Set<Method> methods = null;
       if (nbParms > -1)
       {
-         methods = ReflectionUtils.getAllMethods(target.getClass(), 
-            ReflectionUtils.withName(methName), 
-            ReflectionUtils.withParametersCount(nbParms));
+         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
+               ReflectionUtils.withParametersCount(nbParms));
       }
       else
       {
-         methods = ReflectionUtils.getAllMethods(target.getClass(), 
-               ReflectionUtils.withName(methName));
+         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName));
       }
       if ((methods.isEmpty()) && (nbParms > -1))
       {
          realName = "set" + root;
-         methods = ReflectionUtils.getAllMethods(target.getClass(), 
-            ReflectionUtils.withName(realName), 
-            ReflectionUtils.withParametersCount(nbParms));
+         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
+               ReflectionUtils.withParametersCount(nbParms));
       }
       if ((methods.isEmpty()) && (nbParms > -1))
       {
          realName = "add" + root;
-         methods = ReflectionUtils.getAllMethods(target.getClass(), 
-            ReflectionUtils.withName(realName), 
-            ReflectionUtils.withParametersCount(nbParms));
+         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
+               ReflectionUtils.withParametersCount(nbParms));
       }
 
       if (methods.isEmpty())
       {
          realName = null;
       }
-      
+
       return realName;
    }
 
@@ -446,13 +496,12 @@ public final class Manager
    static Field searchField(Object target, String fieldName)
    {
       Field ret = null;
-      Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(), 
-            ReflectionUtils.withName(fieldName));
+      Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(), ReflectionUtils.withName(fieldName));
       if (!fields.isEmpty())
       {
          ret = fields.toArray(new Field[0])[0];
       }
-      
+
       return ret;
    }
 
@@ -493,19 +542,19 @@ public final class Manager
    static Class<?> searchClass(String namespace, String name)
    {
       String clName = name;
-      
+
       // class short name : ensure first char is uppercase.
       if (!name.contains("."))
       {
-    	  clName = name.substring(0, 1).toUpperCase() + name.substring(1);
+         clName = name.substring(0, 1).toUpperCase() + name.substring(1);
       }
-      
+
       // add namespace
       if (!namespace.trim().isEmpty())
       {
          clName = namespace + "." + clName;
       }
-      
+
       // search in already known classes
       Class<?> cl = getKnownClass(clName);
 
@@ -523,7 +572,7 @@ public final class Manager
             if (clName.contains("."))
             {
                String outerName = clName.substring(0, clName.lastIndexOf("."));
-               String innerName = clName.substring(clName.lastIndexOf(".") +1);
+               String innerName = clName.substring(clName.lastIndexOf(".") + 1);
                Class<?> outerClass = searchClass(namespace, outerName);
                if (outerClass != null)
                {
@@ -554,7 +603,7 @@ public final class Manager
     */
    static Object getInstance(String namespace, String name, Attributes attrs)
    {
-      Class<?> cl = searchClass(namespace, name); 
+      Class<?> cl = searchClass(namespace, name);
       //
       if (cl == null)
       {
@@ -564,13 +613,13 @@ public final class Manager
       try
       {
          Object object = cl.newInstance();
-         for (int i = 0 ; i < attrs.getLength(); i++)
+         for (int i = 0; i < attrs.getLength(); i++)
          {
             String key = attrs.getQName(i);
             String value = attrs.getValue(i);
             setAttribute(object, key, value);
          }
-         
+
          return object;
       }
       catch (InstantiationException | IllegalAccessException e)
@@ -578,7 +627,7 @@ public final class Manager
          return null;
       }
    }
-   
+
    /**
     * Sets the attribute.
     *
@@ -590,7 +639,7 @@ public final class Manager
    {
       setOrAddAttribute(target.getClass(), target, key, value);
    }
-   
+
    /**
     * Sets the attribute or add it.
     *
@@ -607,23 +656,23 @@ public final class Manager
       {
          return true;
       }
-      
+
       // Search for a set method
       if (searchAndRunMethod(cl, target, "set", key, value))
       {
          return true;
       }
-      
+
       // Search for an add method
       if (searchAndRunMethod(cl, target, "add", key, value))
       {
          return true;
       }
-      
+
       // Search for a field
       try
       {
-         Field field =  cl.getDeclaredField(key);
+         Field field = cl.getDeclaredField(key);
          field.setAccessible(true);
          if (testPrimitive(field.getType()))
          {
@@ -644,21 +693,21 @@ public final class Manager
       {
          // let's go to other tries...
       }
-      
+
       // Search for a "getXXX().add" method
       if (applyGetAndAddMethod(cl, target, key, value))
       {
          return true;
       }
-      
+
       Class<?> superCl = cl.getSuperclass();
-      if ((superCl != null) && (! superCl.equals(Object.class)))
+      if ((superCl != null) && (!superCl.equals(Object.class)))
       {
          return setOrAddAttribute(superCl, target, key, value);
       }
       return false;
    }
-   
+
    /**
     * Gets a simple object from a String.
     *
@@ -711,22 +760,64 @@ public final class Manager
 
    static boolean verifyNotReserved(String className)
    {
-	switch(className)
-	{
-	case "integer" :
-	case "boolean" :
-	case "long" :
-	case "float" :
-	case "byte" :
-	case "short" :
-	case "String" :
-	case "double" :
-		return false;
-		
-    default :
-    	return true;
-	}
-}
+      switch (className)
+      {
+         case "integer":
+         case "boolean":
+         case "long":
+         case "float":
+         case "byte":
+         case "short":
+         case "String":
+         case "double":
+            return false;
+
+         default:
+            return true;
+      }
+   }
+
+   /**
+    * Creates a reserved class instance.
+    *
+    * @param className the class name
+    * @return the object
+    */
+   static Object createReserved(String className)
+   {
+      switch (className)
+      {
+         case "integer":
+            return new Integer(0);
+         case "boolean":
+            return new Boolean(true);
+         case "long":
+            return new Long(0);
+         case "float":
+            return new Float(0);
+         case "byte":
+            return new Byte((byte) 0);
+         case "short":
+            return new Short((short) 0);
+         case "String":
+            return new String("");
+         case "double":
+            return new Double(0);
+         default:
+            return null;
+      }
+   }
+
+   /**
+    * Adds the variable.
+    *
+    * @param name the variable name
+    * @param value the variable value
+    */
+   public static void addVariable(String name, Object value)
+   {
+      variables.put(name, value);
+   }
 
    /**
     * Adds the variable.
@@ -735,9 +826,9 @@ public final class Manager
     */
    static void addVariable(Variable variable)
    {
-      variables .put(variable.name, variable.getContent());
+      variables.put(variable.name, variable.getContent());
    }
-   
+
    /**
     * Test if class is convertible in a primitive type.
     *
@@ -768,24 +859,23 @@ public final class Manager
       }
    }
 
-   //========================================================================================================
+   // ========================================================================================================
    // Private methods
-   //========================================================================================================
+   // ========================================================================================================
    /**
-    * Search a method w/one arg. This will search for a method whose name is constructed from arguments.
-    * If found, runs it.
+    * Search a method w/one arg. This will search for a method whose name is constructed from
+    * arguments. If found, runs it.
     *
     * @param cl the class used to search for method
     * @param target the target object to apply method on
-    * @param prefix the prefix for method (like 'set' or 'add') or null for no prefix. It key
-    * is null, the method name will be 'prefix()'.
+    * @param prefix the prefix for method (like 'set' or 'add') or null for no prefix. It key is
+    *           null, the method name will be 'prefix()'.
     * @param key the key containing the core method name. If a prefix exists, the name will be
-    * 'prefixKey()'. If prefix is null, the name is 'key()'.
+    *           'prefixKey()'. If prefix is null, the name is 'key()'.
     * @param value the value to give to the method.
     * @return true, if successful
     */
-   private static boolean searchAndRunMethod(Class<?> cl, Object target, String prefix,
-         String key, Object value)
+   private static boolean searchAndRunMethod(Class<?> cl, Object target, String prefix, String key, Object value)
    {
       try
       {
@@ -808,11 +898,11 @@ public final class Manager
             // No name : can't find a method.
             return false;
          }
-         
-         Method[] methods =  cl.getMethods();
+
+         Method[] methods = cl.getMethods();
          for (Method method : methods)
          {
-            if ((method.getName().equals(methName)) && (method.getParameterCount()== 1))
+            if ((method.getName().equals(methName)) && (method.getParameterCount() == 1))
             {
                method.setAccessible(true);
                Parameter parameter = method.getParameters()[0];
@@ -834,29 +924,27 @@ public final class Manager
       catch (SecurityException | IllegalAccessException | InvocationTargetException e)
       {
          // let's go to other tries...
-         e.printStackTrace();
       }
       catch (IllegalArgumentException e)
       {
          // let's go to other tries...
-         e.printStackTrace();
       }
-      
+
       Class<?> sup = cl.getSuperclass();
-      if ((sup != null) && (! sup.equals(Object.class)))
+      if ((sup != null) && (!sup.equals(Object.class)))
       {
          return searchAndRunMethod(sup, target, prefix, key, value);
       }
       return false;
    }
-   
+
    /**
     * Apply getKEYs().yyy() method chain.
     *
     * @param cl the class used to search for method
     * @param target the target object to apply the getKEYs() method on
     * @param key the key containing the KEY method name part. it will be converted with first
-    * character in uppercase
+    *           character in uppercase
     * @param value the value to give to the method.
     * @return true, if successful
     */
@@ -867,18 +955,18 @@ public final class Manager
       {
          String methName = "get" + key.substring(0, 1).toUpperCase() + key.substring(1) + "s";
          Method meth = cl.getMethod(methName);
-         
+
          Object pack = meth.invoke(target);
          // analyse for parametrized class information
          Class<?> clazz = parametrizedReturnType(meth);
          Method method = null;
          Class<?> cl0 = clazz;
-         while (method == null) 
+         while (method == null)
          {
             // search for add() method in returned type
             try
             {
-               method =  meth.getReturnType().getMethod("add", cl0);
+               method = meth.getReturnType().getMethod("add", cl0);
             }
             catch (NoSuchMethodException e)
             {
@@ -890,7 +978,7 @@ public final class Manager
             }
          }
          method.setAccessible(true);
-         
+
          if (testPrimitive(clazz))
          {
             // apply method on a primitive argument
@@ -905,13 +993,14 @@ public final class Manager
             return true;
          }
       }
-      catch (SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+      catch (SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
+            | InvocationTargetException e)
       {
          // nothing to do here...
       }
       return false;
    }
-   
+
    /**
     * Adds the child object in the parent object.
     *
@@ -923,8 +1012,8 @@ public final class Manager
    {
       // try using adding the object (ex: for use for adding AWT elements in a Container)
       @SuppressWarnings("unchecked")
-      Set<Method> meths = ReflectionUtils.getAllMethods(parent.getClass(),
-            ReflectionUtils.withName("add"), ReflectionUtils.withParametersCount(1));
+      Set<Method> meths = ReflectionUtils.getAllMethods(parent.getClass(), ReflectionUtils.withName("add"),
+            ReflectionUtils.withParametersCount(1));
       if (!meths.isEmpty())
       {
          for (Method method : meths)
@@ -948,17 +1037,18 @@ public final class Manager
       }
       return false;
    }
-   
+
    /**
     * Get parametrized return type if any.
     *
     * @param method the method to analyze
     * @return the class for parametrized (or not) return type
     */
-   private static Class<?> parametrizedReturnType(Method method) {
+   private static Class<?> parametrizedReturnType(Method method)
+   {
       Type returnType = method.getGenericReturnType();
       Class<?> clazz = method.getReturnType();
-      if(returnType instanceof ParameterizedType)
+      if (returnType instanceof ParameterizedType)
       {
          ParameterizedType type = (ParameterizedType) returnType;
          Type[] typeArguments = type.getActualTypeArguments();
@@ -968,5 +1058,30 @@ public final class Manager
          }
       }
       return clazz;
-  }
+   }
+   
+   /**
+    * Replace a variable. Needed to change Number value.
+    *
+    * @param oldObj the old object
+    * @param newObj the new object
+    */
+   static void replaceVariable(Object oldObj, Object newObj)
+   {
+      for (String key : variables.keySet())
+      {
+         Object obj = variables.get(key);
+         if (obj.equals(oldObj))
+         {
+            variables.put(key, newObj);
+         }
+      }
+   }
+   
+   static boolean checkCompatibility(String namespace, String baseName, String derivedName)
+   {
+      Class<?> base = searchClass(namespace, baseName);
+      Class<?> derived = searchClass("", derivedName);
+      return base.isAssignableFrom(derived);
+   }
 }

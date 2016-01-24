@@ -18,6 +18,9 @@ public class Bundle
    /** If we are in a method. */
    private String inMethod;
    
+   /** The content value. */
+   private String content;
+   
    /** The additionnal info. */
    private String addition;
    
@@ -170,5 +173,15 @@ public class Bundle
    public void setAddition(String addition)
    {
       this.addition = addition;
+   }
+
+   public String getContent()
+   {
+      return content;
+   }
+
+   public void setContent(String content)
+   {
+      this.content = content;
    }
 }

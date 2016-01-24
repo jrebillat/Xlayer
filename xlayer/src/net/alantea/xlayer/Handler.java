@@ -92,8 +92,8 @@ public class Handler extends DefaultHandler
       if (!str.isEmpty())
       {
          concatChars += str;
-         currentBundle.setObject(concatChars);
-         currentBundle.addParm(str);
+      //   currentBundle.setObject(concatChars);
+      //   currentBundle.addParm(str);
       }
    }
    
@@ -134,6 +134,23 @@ public class Handler extends DefaultHandler
    public void endElement(String uri, String localName,
          String qName)
    {
+      if (!concatChars.isEmpty())
+      {
+         currentBundle.addParm(concatChars);
+         if (Manager.testPrimitive(currentBundle.getObject().getClass()))
+         {
+           Object newObject = Manager.getSimpleObject(currentBundle.getObject().getClass(), concatChars);
+           Manager.replaceVariable(currentBundle.getObject(), newObject);
+           currentBundle.setObject(newObject);
+         }
+         else
+         {
+               currentBundle.setObject(concatChars);
+         }
+         concatChars = "";
+      }
+      
+      
       // copy current state
       Bundle innerBundle = currentBundle;
       
@@ -493,18 +510,28 @@ public class Handler extends DefaultHandler
             {
                className = classAttr;
             }
+            
+            Object newObject = null;
             if (Manager.verifyNotReserved(className))
             {
-               Object newObject = Manager.getInstance(namespace, className, atts);
-               if (newObject != null)
+               newObject = Manager.getInstance(namespace, className, atts);
+            }
+            else
+            {
+               newObject = Manager.createReserved(className);
+            }
+            if (newObject != null)
+            {
+               currentBundle.setObject(newObject);
+               String varName = atts.getValue("_put");
+               if (varName != null)
                {
-                  currentBundle.setObject(newObject);
-                  String varName = atts.getValue("_put");
-                  if (varName != null)
-                  {
-                     Manager.setVariable(varName, newObject);
-                  }
+                  Manager.setVariable(varName, newObject);
                }
+            }
+            else
+            {
+               addError("Invalid object definition : class " + localName);
             }
          }
       }

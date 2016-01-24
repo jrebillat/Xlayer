@@ -13,7 +13,7 @@ import net.alantea.xlayer.test.MethodsRoot;
 import net.alantea.xlayer.test.SimpleRoot;
 
 /**
- * The Class Loaded.
+ * Simplest tests.
  *
  * @author Jean
  */
@@ -35,7 +35,7 @@ public class SimpleObjectLoadTest
    }
 
    /**
-    * Load simple object, only available by its field, then its setter.
+    * Load simple objects, only available by its field, then its setter.
     */
    @Test
    public void loadSimpleWrapper()
@@ -111,16 +111,16 @@ public class SimpleObjectLoadTest
       Manager.parse(root, HEADER_XML + "<withOneParameter>666</withOneParameter>");
       Assert.assertEquals(root.intResult, 666);
       
-      Manager.parse(root, HEADER_XML + "<withTwoParameters>37<integer>5</integer></withTwoParameters>");
+      Manager.parse(root, HEADER_XML + "<withTwoParameters><integer>37</integer><integer>5</integer></withTwoParameters>");
       Assert.assertEquals(root.intResult, 42);
       
-      Manager.parse(root, HEADER_XML + "<withThreeParameters>Good bye <String>Crual</String>World</withThreeParameters>");
+      Manager.parse(root, HEADER_XML + "<withThreeParameters><String>Good bye </String><String>Crual</String><String>World</String></withThreeParameters>");
       Assert.assertEquals(root.strResult, "Good bye Crual World");
       
-      Manager.parse(root, HEADER_XML + "<withList>Rami <String>na</String>grobis</withList>");
+      Manager.parse(root, HEADER_XML + "<withList><String>Rami </String><String>na</String><String>grobis</String></withList>");
       Assert.assertEquals(root.strResult, "Raminagrobis");
       
-      Manager.parse(root, HEADER_XML + "<withIntAndList>36<list><String>Quai</String><String>des</String><String>Orfevres</String></list></withIntAndList>");
+      Manager.parse(root, HEADER_XML + "<withIntAndList><integer>36</integer><list><String>Quai</String><String>des</String><String>Orfevres</String></list></withIntAndList>");
       Assert.assertEquals(root.strResult, "36 Quai des Orfevres");
 
       Manager.parse(root, HEADER_XML + "<withOneParameter><withReturn/></withOneParameter>");
