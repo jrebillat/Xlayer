@@ -39,4 +39,16 @@
     </classes>
   </test>
   
+  <test name="Xml method calling">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLMethodCallingTest" />
+    </classes>
+  </test>
+  
+  <test name="Xml constant use">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLConstantTest" />
+    </classes>
+  </test>
+  
 </suite>  	

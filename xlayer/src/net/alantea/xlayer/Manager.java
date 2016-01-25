@@ -312,7 +312,12 @@ public final class Manager
     */
    public static Object getVariable(String name)
    {
-      return variables.get(name);
+      Object object = variables.get(name);
+      if ((object != null) && (object instanceof Variable))
+      {
+         object = ((Variable)object).getContent();
+      }
+      return object;
    }
 
    /**
@@ -435,10 +440,12 @@ public final class Manager
          }
          catch (NullPointerException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
          {
-            e.printStackTrace();
+            info.setSuccess(false);
+            info.setErrorMessage("Error applying method " + methName);
          }
       }
       info.setSuccess(false);
+      info.setErrorMessage("Impossible to find method " + methName + " with correct arguments.");
       return info;
    }
 
@@ -610,21 +617,28 @@ public final class Manager
          return null;
       }
 
-      try
+      if (cl.isEnum())
       {
-         Object object = cl.newInstance();
-         for (int i = 0; i < attrs.getLength(); i++)
-         {
-            String key = attrs.getQName(i);
-            String value = attrs.getValue(i);
-            setAttribute(object, key, value);
-         }
-
-         return object;
+         return cl.getEnumConstants()[0];
       }
-      catch (InstantiationException | IllegalAccessException e)
+      else
       {
-         return null;
+         try
+         {
+            Object object = cl.newInstance();
+            for (int i = 0; i < attrs.getLength(); i++)
+            {
+               String key = attrs.getQName(i);
+               String value = attrs.getValue(i);
+               setAttribute(object, key, value);
+            }
+
+            return object;
+         }
+         catch (InstantiationException | IllegalAccessException e)
+         {
+            return null;
+         }
       }
    }
 

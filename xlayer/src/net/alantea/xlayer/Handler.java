@@ -222,14 +222,17 @@ public class Handler extends DefaultHandler
          MethodReturnedInformation ret = Manager.applyMethod(currentBundle.getObject(), innerBundle.getInMethod(), innerBundle.getParms());
          if (!ret.isSuccess())
          {
-            addError("Invalid method execution in " + innerBundle.getInMethod() + ".");
+            addError(ret.getErrorMessage());
          }
          else
          {
             // store result for upper usage
             if (ret.isNonvoid())
             {
-               innerBundle.setObject(ret.getValue());
+               if ( ret.getValue() != null)
+               {
+                  currentBundle.setObject(ret.getValue());
+               }
                currentBundle.addParm(ret.getValue());
             }
          }
@@ -251,7 +254,20 @@ public class Handler extends DefaultHandler
             boolean ret = Manager.addObjectInObject(currentBundle.getObject(), innerBundle.getObject());
             if (!ret)
             {
-               addError("Error concerning " + innerBundle.getMethodName() + ".");
+               // try to copy object
+               if ((Manager.testPrimitive(currentBundle.getObject().getClass())) 
+                     && (innerBundle.getObject() != null))
+               {
+                  if (currentBundle.getObject().getClass().isAssignableFrom(innerBundle.getObject().getClass()))
+                  {
+                     currentBundle.setObject(innerBundle.getObject());
+                     done = true;
+                  }
+               }
+               if (!done)
+               {
+                  addError("Error concerning " + innerBundle.getMethodName() + ".");
+               }
             }
          }
       }
@@ -467,7 +483,13 @@ public class Handler extends DefaultHandler
          {
             currentBundle.setObject(cl.getField(cstName).get(null));
          }
-         catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+         catch (NoSuchFieldException e)
+         {
+            currentBundle.setValid(false);
+            addError("Invalid constant name : " + cstName + " in " + cstClass);
+            return true;
+         }
+         catch (SecurityException | IllegalArgumentException | IllegalAccessException e)
          {
             e.printStackTrace();
             currentBundle.setValid(false);
@@ -500,6 +522,10 @@ public class Handler extends DefaultHandler
          if ((field != null) && (Manager.testPrimitive(field.getType())))
          {
             currentBundle.setObject(superBundle.getObject());
+         }
+         else if ((field != null) && (field.getType().isEnum()))
+         {
+            currentBundle.setObject(field.getType().getEnumConstants()[0]);
          }
          else
          {

@@ -37,7 +37,6 @@ public class VariableRegistrationTest
    @Test
    public void getVariableTest()
    {
-      // before add class
       Manager.parse(null, HEADER_XML
             + "<integer _put='myTestVariable'>"
             + "24"
@@ -51,17 +50,14 @@ public class VariableRegistrationTest
    @Test
    public void useVariableTest()
    {
-      // TODO
-//      // add variable
-//      Manager.addVariable("firstVariable", "passed value");
-//      
-//      // before add class
-//      Manager.parse(null, HEADER_XML
-//            + "<string _put='secondVariable' _variable='firstVariable'>"
-//            + "</string>");
-//      Object object = Manager.getVariable("secondVariable");
-//      Assert.assertNotNull(object);
-//      Assert.assertEquals(object.getClass(), String.class);
-//      Assert.assertEquals(object, "passed value");
+      // add variable
+      Manager.addVariable("firstVariable", "passed value");
+      
+      Manager.parse(null, HEADER_XML
+            + "<variable name='secondVariable'><string _variable='firstVariable'/></variable>");
+      Object object = Manager.getVariable("secondVariable");
+      Assert.assertNotNull(object);
+      Assert.assertEquals(object.getClass(), String.class);
+      Assert.assertEquals(object, "passed value");
    }
 }

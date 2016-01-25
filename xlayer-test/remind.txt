@@ -1,14 +1,14 @@
 To test :
 
-- in java code
++ in java code
 	+ packages registration
 		+ add package
 		+ missing package
 		+ add class
 		+ missing class
-	- variables
+	+ variables
 		+ define
-		- use
+		+ use
 		+ missing one
 		+ retrieve after parsing
 	+ parsing from code
@@ -39,20 +39,22 @@ To test :
 		+ setting object value
 		+ invalid name
 		+ invalid value
-	- method
-		- calling with simple value
-		- setting with object value
-		- setting with several values
-		- setting with list
-		- setting with object value + list value
-		- invalid name
-		- invalid values
-	- constant
-		- load from class in registered package
-		- load from unregistered class
-		- load from inner class
-		- load from invalid class
-		- load with invalid name
+	+ method
+		+ calling without value
+		+ calling with simple value
+		+ calling with object value
+		+ calling with several values
+		+ calling with list
+		+ calling with object value + list value
+		+ calling with invalid name
+		+ calling with invalid values
+	+ constant
+		+ load from specific class
+		+ load from registered class
+		+ load from inner class
+		+ load from enum class
+		+ load from invalid class
+		+ load with invalid name
 	- list
 		- from simple value
 		- from object
