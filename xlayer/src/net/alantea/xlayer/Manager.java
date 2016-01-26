@@ -471,17 +471,31 @@ public final class Manager
       {
          methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName));
       }
-      if ((methods.isEmpty()) && (nbParms > -1))
+      if ((methods.isEmpty()))
       {
          realName = "set" + root;
-         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
-               ReflectionUtils.withParametersCount(nbParms));
+         if (nbParms > -1)
+         {
+            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
+                  ReflectionUtils.withParametersCount(nbParms));
+         }
+         else
+         {
+            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName));
+         }
       }
-      if ((methods.isEmpty()) && (nbParms > -1))
+      if ((methods.isEmpty()))
       {
          realName = "add" + root;
-         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
-               ReflectionUtils.withParametersCount(nbParms));
+         if (nbParms > -1)
+         {
+            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
+                  ReflectionUtils.withParametersCount(nbParms));
+         }
+         else
+         {
+            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName));
+         }
       }
 
       if (methods.isEmpty())
@@ -507,6 +521,11 @@ public final class Manager
       if (!fields.isEmpty())
       {
          ret = fields.toArray(new Field[0])[0];
+         if (ret.getGenericType() instanceof ParameterizedType)
+         {
+            // need accessor
+            ret = null;
+         }
       }
 
       return ret;

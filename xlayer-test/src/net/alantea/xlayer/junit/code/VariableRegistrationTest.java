@@ -60,4 +60,21 @@ public class VariableRegistrationTest
       Assert.assertEquals(object.getClass(), String.class);
       Assert.assertEquals(object, "passed value");
    }
+   
+   @Test
+   public void redefineVariableTest()
+   {
+      // add variable
+      Manager.addVariable("firstVariable", "passed value");
+      
+      Manager.parse(null, HEADER_XML
+            + "<xlayer>"
+            + "<variable name='secondVariable'><string _variable='firstVariable'/></variable>"
+            + "<variable name='secondVariable'>Redefined</variable>"
+            + "</xlayer>");
+      Object object = Manager.getVariable("secondVariable");
+      Assert.assertNotNull(object);
+      Assert.assertEquals(object.getClass(), String.class);
+      Assert.assertEquals(object, "Redefined");
+   }
 }

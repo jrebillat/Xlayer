@@ -37,6 +37,7 @@ To test :
 	+ field
 		+ setting simple value
 		+ setting object value
+		+ setting list value
 		+ invalid name
 		+ invalid value
 	+ method
@@ -55,21 +56,22 @@ To test :
 		+ load from enum class
 		+ load from invalid class
 		+ load with invalid name
-	- list
-		- from simple value
-		- from object
-		- null
+	+ list
+		+ from simple value
+		+ from object
+		+ list in list
+		+ empty
+	+ variable
+		+ define simple
+		+ define when creating object
+		+ define with list
+		+ use it
+		+ re-definition
 	- include
 		- simple file
 		- recurse on several files
 		- call twice a file
 		- invalid file
-	- variable
-		- define simple
-		- define when creating object
-		- use it
-		- bad definition
-		- re-definition
 	- script
 		- creation
 		- use

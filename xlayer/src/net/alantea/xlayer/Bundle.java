@@ -22,7 +22,7 @@ public class Bundle
    private String content;
    
    /** The additionnal info. */
-   private String addition;
+   private Object addition;
    
    /** The parameters for method. */
    private List<Object> parms = new ArrayList<>();
@@ -160,7 +160,7 @@ public class Bundle
     *
     * @return the addition
     */
-   public String getAddition()
+   public Object getAddition()
    {
       return addition;
    }
@@ -170,7 +170,7 @@ public class Bundle
     *
     * @param addition the new addition
     */
-   public void setAddition(String addition)
+   public void setAddition(Object addition)
    {
       this.addition = addition;
    }

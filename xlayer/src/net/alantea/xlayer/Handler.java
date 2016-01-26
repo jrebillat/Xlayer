@@ -1,6 +1,7 @@
 package net.alantea.xlayer;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -116,7 +117,7 @@ public class Handler extends DefaultHandler
       if (xlayerStartHandler(localName, atts)) return;
       if (methodStartHandler(localName)) return;
       if (variableStartHandler(localName, atts)) return;
-      if (listStartHandler(localName)) return;
+      if (listStartHandler(localName, atts)) return;
       if (constantStartHandler (localName, atts)) return;
       if (objectStartHandler (namespaceURI, localName, atts)) return;
       
@@ -186,10 +187,27 @@ public class Handler extends DefaultHandler
          return;
       }
       
+      // Add parametrized field.
+      if (currentBundle.getAddition() instanceof Field)
+      {
+         Field field = (Field) currentBundle.getAddition();
+         try
+         {
+            field.setAccessible(true);
+            field.set(currentBundle.getObject(), innerBundle.getParms());
+         }
+         catch (IllegalArgumentException | IllegalAccessException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+         return;
+      }
+      
       // Add variable.
       if ("variable".equals(localName))
       {
-         Manager.setVariable(innerBundle.getAddition(), innerBundle.getObject());
+         Manager.setVariable((String)innerBundle.getAddition(), innerBundle.getObject());
          return;
       }
 
@@ -214,6 +232,10 @@ public class Handler extends DefaultHandler
       else if ("list".equals(innerBundle.getInMethod()))
       {
          currentBundle.addParm(innerBundle.getParms());
+         if (innerBundle.getAddition() != null)
+         {
+            Manager.setVariable((String) innerBundle.getAddition(), innerBundle.getParms());
+         }
       }
       // coming out of a method
       else if (innerBundle.getInMethod() != null)
@@ -373,7 +395,7 @@ public class Handler extends DefaultHandler
     */
    private boolean methodStartHandler(String name)
    {
-      // Search for 'localName' as a method only if a field is not available.
+      // Search for 'localName' as a method or a field with accessor.
       if ((superBundle.getObject() != null) && (Manager.searchField(superBundle.getObject(), name) == null))
       {
          currentBundle.setInMethod(Manager.searchMethod(superBundle.getObject(), name, -1));
@@ -435,13 +457,18 @@ public class Handler extends DefaultHandler
     * @param localName the local name
     * @return true, if successful
     */
-   private boolean listStartHandler(String localName)
+   private boolean listStartHandler(String localName, Attributes atts)
    {
       if ("list".equals(localName))
       {
          currentBundle.setObject(superBundle.getObject());
          currentBundle.setInMethod("list");
          currentBundle.setMethodName(localName);
+         String varName = atts.getValue("_put");
+         if (varName != null)
+         {
+            currentBundle.setAddition(varName);
+         }
          return true;
       }
       return false;
@@ -525,7 +552,13 @@ public class Handler extends DefaultHandler
          }
          else if ((field != null) && (field.getType().isEnum()))
          {
+            // just initialize. Will be overriden at end.
             currentBundle.setObject(field.getType().getEnumConstants()[0]);
+         }
+         else if ((field != null) && (field.getGenericType() instanceof ParameterizedType))
+         {
+            // A list, or something alike...
+            currentBundle.setAddition(field);
          }
          else
          {

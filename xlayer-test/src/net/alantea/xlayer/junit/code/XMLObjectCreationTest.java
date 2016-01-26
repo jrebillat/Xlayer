@@ -29,6 +29,10 @@ public class XMLObjectCreationTest
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myparsingRoot'>"
             + "</ParsingRoot>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
       Assert.assertTrue(errors.isEmpty());
       Object object = Manager.getVariable("myparsingRoot");
       Assert.assertNotNull(object);
@@ -43,6 +47,10 @@ public class XMLObjectCreationTest
             + "<?package javax.swing?>"
             + "<JFrame _put='myJFrame'>"
             + "</JFrame>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
       Assert.assertTrue(errors.isEmpty());
       Object object = Manager.getVariable("myJFrame");
       Assert.assertNotNull(object);
@@ -57,6 +65,10 @@ public class XMLObjectCreationTest
             + "<ParsingRoot _put='myparsingRoot'>"
             + "<testObject _class='ParsingDerivedClass' _put='myParsingObject1'></testObject>"
             + "</ParsingRoot>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
       Assert.assertTrue(errors.isEmpty());
       Object object = Manager.getVariable("myParsingObject1");
       Assert.assertNotNull(object);
@@ -71,6 +83,10 @@ public class XMLObjectCreationTest
             + "<ParsingRoot _put='myparsingRoot'>"
             + "<testObject _class='NonExistingClass' _put='myParsingObject2'></testObject>"
             + "</ParsingRoot>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
       Assert.assertFalse(errors.isEmpty());
    }
    
@@ -82,6 +98,10 @@ public class XMLObjectCreationTest
             + "<ParsingRoot _put='myparsingRoot'>"
             + "<testObject _class='ParsingRoot' _put='myParsingObject3'></testObject>"
             + "</ParsingRoot>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
       Assert.assertFalse(errors.isEmpty());
    }
 }

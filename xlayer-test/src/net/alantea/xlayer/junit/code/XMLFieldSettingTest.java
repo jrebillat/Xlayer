@@ -51,6 +51,60 @@ public class XMLFieldSettingTest
       Assert.assertNotNull(val);
       Assert.assertEquals(val.getClass(), ParsingDerivedClass.class);
    }
+   
+   @Test
+   public void ListFieldSetting1Test()
+   {
+      ParsingRoot root = new ParsingRoot();
+      List<String> errors = Manager.parse(root, HEADER_XML
+            + "<myList>"
+               + "<list>"
+                  + "<integer>1</integer>"
+                  + "<integer>2</integer>"
+                  + "<integer>3</integer>"
+                  + "<integer>4</integer>"
+                  + "</list>"
+            + "</myList>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object ints = root.getMyList();
+      Assert.assertNotNull(ints);
+      Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
+      int i = 0;
+      for (String err : errors)
+      {
+         Assert.assertEquals(((List<Integer>)ints).get(i++), new Integer(i));
+      }
+   }  
+   
+ @Test
+ public void ListFieldSetting2Test()
+ {
+    ParsingRoot root = new ParsingRoot();
+    List<String> errors = Manager.parse(root, HEADER_XML
+          + "<myList>"
+                + "<integer>1</integer>"
+                + "<integer>2</integer>"
+                + "<integer>3</integer>"
+                + "<integer>4</integer>"
+          + "</myList>");
+    for (String err : errors)
+    {
+       System.out.println(err);
+    }
+    Assert.assertTrue(errors.isEmpty());
+    Object ints = root.getMyList();
+    Assert.assertNotNull(ints);
+    Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
+    int i = 0;
+    for (String err : errors)
+    {
+       Assert.assertEquals(((List<Integer>)ints).get(i++), new Integer(i));
+    }
+ }  
 
    @Test
    public void invalidNameFieldSettingTest()
