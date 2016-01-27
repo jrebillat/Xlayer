@@ -165,7 +165,7 @@ public final class Manager
     */
    public static List<String> parseFile(String path)
    {
-      return parseFile(new Handler(null), path);
+      return parseHandledFile(new Handler(null), path);
    }
 
    /**
@@ -177,7 +177,7 @@ public final class Manager
     */
    public static List<String> parseFile(Object root, String path)
    {
-      return parseFile(new Handler(root), path);
+      return parseHandledFile(new Handler(root), path);
    }
 
    /**
@@ -201,6 +201,18 @@ public final class Manager
     */
    public static List<String> parseResource(Object root, String path)
    {
+      return parseHandledResource(new Handler(root), path);
+   }
+
+   /**
+    * Parses the resource.
+    *
+    * @param root the root object
+    * @param path the resource path containing the XML
+    * @return true, if successful
+    */
+   public static List<String> parseHandledResource(Handler handler, String path)
+   {
       if (path == null)
       {
          List<String> ret = new ArrayList<>();
@@ -215,7 +227,7 @@ public final class Manager
          return ret;
       }
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      return parse(new Handler(root), reader);
+      return parse(handler, reader);
    }
 
    /**
@@ -225,7 +237,7 @@ public final class Manager
     * @param path the file path containing the XML
     * @return true, if successful
     */
-   static List<String> parseFile(Handler handler, String path)
+   static List<String> parseHandledFile(Handler handler, String path)
    {
       if (path == null)
       {

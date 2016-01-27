@@ -20,7 +20,7 @@
 			<integer>42</integer>
 		</variable>
 		<machin _variable='titi' />
-		<include path='rawsubfile.xml'/>
+		<?include 'rawsubfile.xml'?>
 	</truc>
 	<withEnum>
 	   <state>

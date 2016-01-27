@@ -1,5 +1,7 @@
 package net.alantea.xlayer.test.raw;
 
+import java.util.List;
+
 import net.alantea.xlayer.Manager;
 
 public class Test1
@@ -10,7 +12,11 @@ public class Test1
    {
       Manager.addPackage("net.alantea.xlayer.test.raw");
       Root root = new Root();
-      Manager.parseResource(root, DONNEES_XML);
+      List<String> errors = Manager.parseResource(root, DONNEES_XML);
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
       Truc t = root.getTruc();
       System.out.println("OK " + t);
    }

@@ -73,7 +73,49 @@ public class Handler extends DefaultHandler
       if ("package".equals(target))
       {
          Manager.addPackage(data);
+      }     
+      // Include file.
+      if ("include".equals(target))
+      {
+         if (data.startsWith("file="))
+         {
+            addErrors(Manager.parseHandledFile(this,stripChain(data.substring(5))));
+         }
+         else if (data.startsWith("resource="))
+         {
+            addErrors(Manager.parseHandledResource(this,stripChain(data.substring(9))));
+         }
       }
+   }
+   
+   /**
+    * Strip chain.
+    *
+    * @param data the data
+    * @return the string
+    */
+   private String stripChain(String data)
+   {
+      String ret = data.trim();
+      
+      if (ret.startsWith("'"))
+      {
+         ret = ret.substring(1);
+      }
+      else if (ret.startsWith("\""))
+      {
+         ret = ret.substring(1);
+      }
+      
+      if (ret.endsWith("'"))
+      {
+         ret = ret.substring(0, ret.length() - 1);
+      }
+      else if (ret.endsWith("\""))
+      {
+         ret = ret.substring(0, ret.length() - 1);
+      }
+      return ret;
    }
 
 
@@ -323,6 +365,16 @@ public class Handler extends DefaultHandler
    {
       this.errors.add(error);
    }
+
+   /**
+    * Adds the errors.
+    *
+    * @param errors the error list
+    */
+   public void addErrors(List<String> errors)
+   {
+      this.errors.addAll(errors);
+   }
    
    /**
     * Begin start handler.
@@ -380,8 +432,25 @@ public class Handler extends DefaultHandler
       if ("include".equals(name))
       {
          String filePath = atts.getValue("path");
+         String fileType = atts.getValue("type");
          includeLevel++;
-         Manager.parseFile(this, filePath);
+         List<String> errors = null;
+         if ((fileType != null) && ("file".equals(fileType.toLowerCase())))
+         {
+            errors = Manager.parseHandledFile(this, filePath);
+         }
+         else
+         {
+            errors = Manager.parseHandledResource(this, filePath);
+         }
+         if (errors == null)
+         {
+            addError("Bad include call");
+         }
+         else if (!errors.isEmpty())
+         {
+            addErrors(errors);
+         }
          return true;
       }
       return false;

@@ -67,11 +67,12 @@ To test :
 		+ define with list
 		+ use it
 		+ re-definition
-	- include
-		- simple file
-		- recurse on several files
-		- call twice a file
-		- invalid file
+	+ include
+		+ simple file from string
+		+ simple resource from string
+		+ file from file
+		+ recurse on several files
+		+ invalid file
 	- script
 		- creation
 		- use

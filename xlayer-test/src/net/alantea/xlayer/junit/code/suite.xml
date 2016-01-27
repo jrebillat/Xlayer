@@ -63,4 +63,10 @@
     </classes>
   </test>
   
+  <test name="Xml include">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLIncludeTest" />
+    </classes>
+  </test>
+  
 </suite>  	
