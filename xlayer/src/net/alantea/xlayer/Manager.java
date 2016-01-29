@@ -822,6 +822,25 @@ public final class Manager
       }
    }
 
+   static boolean verifyNotReservedContainer(String className)
+   {
+      switch (className)
+      {
+         case "Integer":
+         case "Boolean":
+         case "Long":
+         case "Float":
+         case "Byte":
+         case "Short":
+         case "String":
+         case "Double":
+            return false;
+
+         default:
+            return true;
+      }
+   }
+
    /**
     * Creates a reserved class instance.
     *

@@ -52,6 +52,7 @@ public class XMLFieldSettingTest
       Assert.assertEquals(val.getClass(), ParsingDerivedClass.class);
    }
    
+   @SuppressWarnings("unchecked")
    @Test
    public void ListFieldSetting1Test()
    {
@@ -73,14 +74,14 @@ public class XMLFieldSettingTest
       Object ints = root.getMyList();
       Assert.assertNotNull(ints);
       Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
-      int i = 0;
-      for (String err : errors)
+      for (int i = 0; i < ((List<Integer>)ints).size(); i++ )
       {
-         Assert.assertEquals(((List<Integer>)ints).get(i++), new Integer(i));
+         Assert.assertEquals(((List<Integer>)ints).get(i), new Integer(i+1));
       }
    }  
    
- @Test
+ @SuppressWarnings("unchecked")
+@Test
  public void ListFieldSetting2Test()
  {
     ParsingRoot root = new ParsingRoot();
@@ -99,10 +100,9 @@ public class XMLFieldSettingTest
     Object ints = root.getMyList();
     Assert.assertNotNull(ints);
     Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
-    int i = 0;
-    for (String err : errors)
+    for (int i = 0; i < ((List<Integer>)ints).size(); i++ )
     {
-       Assert.assertEquals(((List<Integer>)ints).get(i++), new Integer(i));
+       Assert.assertEquals(((List<Integer>)ints).get(i), new Integer(i+1));
     }
  }  
 

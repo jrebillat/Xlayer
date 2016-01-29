@@ -25,7 +25,7 @@ To test :
 			+ without root
 			+ unknown resource
 
-- XML parsing
++ XML parsing
 	+ packages registration
 		+ add package
 		+ missing package
@@ -73,28 +73,28 @@ To test :
 		+ file from file
 		+ recurse on several files
 		+ invalid file
-	- script
-		- creation
-		- use
-		- returned value
-		- bad script
-		- bad call ????
-		- bad return type
-	- recursivity
-		- object in object
-		- simple in object
-		- method in object
-		- list in object
-		- script in object
-		- simple in method
-		- method in method
-		- object in method
-		- list in method
-		- script in method
-		- simple in list
-		- object in list
-		- method in list
-		- list in list
-		- script in list
+	+ script
+		+ creation
+		+ use
+		+ returned value
+		+ bad script
+		+ bad return type
+	+ recursivity
+		+ object in object
+		+ simple in object
+		+ method in object
+		+ list in object
+		+ script in object
+		+ simple in method
+		+ method in method
+		+ object in method
+		+ list in method
+		+ script in method
+		+ simple in list
+		+ object in list
+		+ method in list
+		+ list in list
+		+ script in list
 		
++ using proxy
 	

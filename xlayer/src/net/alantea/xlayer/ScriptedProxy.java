@@ -1,6 +1,7 @@
 package net.alantea.xlayer;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
@@ -41,6 +42,15 @@ public class ScriptedProxy
     */
    public Object doIt(Method method, Object[] objects)
    {
+      Method[] objectMeths = Object.class.getDeclaredMethods();
+      for (Method objectMeth : objectMeths)
+      {
+         if (objectMeth.equals(method))
+         {
+            System.out.println(objectMeth.getName());
+            return null;
+         }
+      }
       try
       {
          Map<String, Object> variables = Manager.getVariables();
@@ -55,6 +65,32 @@ public class ScriptedProxy
       catch (ScriptException e)
       {
          throw new RuntimeException(e);
+      }
+   }
+
+   /**
+    * Do it.
+    *
+    * @param script the script to launch
+    * @param objects the objects
+    * @return the object
+    */
+   public static Object launch(Handler handler, String script, List<Object> objects)
+   {
+      try
+      {
+         Map<String, Object> variables = Manager.getVariables();
+         for (String key : variables.keySet())
+         {
+            engine.put(key, variables.get(key));
+         }
+         engine.put("arguments", objects.toArray());
+         return engine.eval(script);
+      }
+      catch (ScriptException e)
+      {
+         handler.addError("Bad script : " + e.getMessage());
+         return null;
       }
    }
 

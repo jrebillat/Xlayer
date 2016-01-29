@@ -180,7 +180,7 @@ public class Handler extends DefaultHandler
       if (!concatChars.isEmpty())
       {
          currentBundle.addParm(concatChars);
-         if (Manager.testPrimitive(currentBundle.getObject().getClass()))
+         if ((currentBundle.getObject() != null) && (Manager.testPrimitive(currentBundle.getObject().getClass())))
          {
            Object newObject = Manager.getSimpleObject(currentBundle.getObject().getClass(), concatChars);
            Manager.replaceVariable(currentBundle.getObject(), newObject);
@@ -221,11 +221,22 @@ public class Handler extends DefaultHandler
       // Scripted Placeholder.
       if ("script".equals(localName))
       {
-         String replaced = innerBundle.getMethodName();
          String script = (String) innerBundle.getObject();
-
-         Object obj = new ScriptedProxy(script).as(Manager.searchClass("", replaced));
-         currentBundle.addParm(obj);
+         String replaced = innerBundle.getMethodName();
+         if (replaced == null)
+         {
+            Object obj = ScriptedProxy.launch(this, script, innerBundle.getParms());
+            if (obj != null)
+            {
+               currentBundle.setObject(obj);
+               currentBundle.addParm(obj);
+            }
+         }
+         else
+         {
+            Object obj = new ScriptedProxy(script).as(Manager.searchClass("", replaced));
+            currentBundle.addParm(obj);
+         }
          return;
       }
       
@@ -296,8 +307,8 @@ public class Handler extends DefaultHandler
                if ( ret.getValue() != null)
                {
                   currentBundle.setObject(ret.getValue());
+                  currentBundle.addParm(ret.getValue());
                }
-               currentBundle.addParm(ret.getValue());
             }
          }
       }

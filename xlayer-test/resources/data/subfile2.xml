@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<xlayer>
+   <integer _put='myTestVariable3'>42</integer>
+</xlayer>

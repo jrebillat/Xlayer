@@ -69,4 +69,16 @@
     </classes>
   </test>
   
+  <test name="Xml recursivity">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLRecursivityTest" />
+    </classes>
+  </test>
+  
+  <test name="Proxy test">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.ProxyTest" />
+    </classes>
+  </test>
+  
 </suite>  	

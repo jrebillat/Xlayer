@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<xlayer>
+  <list>
+   <include path='/data/subsubfile5.xml' type='resource'/>
+   <integer _put='myTestVariable5'>66</integer>
+  </list>
+</xlayer>

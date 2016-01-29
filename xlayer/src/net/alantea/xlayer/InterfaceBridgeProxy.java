@@ -28,9 +28,16 @@ public class InterfaceBridgeProxy implements InvocationHandler
    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
    {
       Object ret = ((ScriptedProxy) (proxee)).doIt(method, args);
-      if ((ret != null) && (method.getReturnType().isAssignableFrom(ret.getClass())))
+      if (ret != null)
       {
-         return ret;
+         if (method.getReturnType().isAssignableFrom(ret.getClass()))
+         {
+            return ret;
+         }
+         if (!Manager.verifyNotReservedContainer(ret.getClass().getSimpleName()))
+         {
+            return ret;
+         }
       }
       return null;
    }
