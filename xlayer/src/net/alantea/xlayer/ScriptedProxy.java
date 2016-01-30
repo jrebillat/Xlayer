@@ -72,10 +72,9 @@ public class ScriptedProxy
     * Do it.
     *
     * @param script the script to launch
-    * @param objects the objects
     * @return the object
     */
-   public static Object launch(Handler handler, String script, List<Object> objects)
+   public static Object launch(Handler handler, String script)
    {
       try
       {
@@ -84,7 +83,6 @@ public class ScriptedProxy
          {
             engine.put(key, variables.get(key));
          }
-         engine.put("arguments", objects.toArray());
          return engine.eval(script);
       }
       catch (ScriptException e)

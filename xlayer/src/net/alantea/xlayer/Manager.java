@@ -237,7 +237,7 @@ public final class Manager
     * @param path the file path containing the XML
     * @return true, if successful
     */
-   static List<String> parseHandledFile(Handler handler, String path)
+   public static List<String> parseHandledFile(Handler handler, String path)
    {
       if (path == null)
       {
@@ -354,6 +354,7 @@ public final class Manager
     * @return the information
     */
    @SuppressWarnings("unchecked")
+   public
    static MethodReturnedInformation applyMethod(Object target, String methName, List<Object> objects)
    {
       MethodReturnedInformation info = new MethodReturnedInformation();
@@ -361,7 +362,14 @@ public final class Manager
       List<Class<?>> parmClasses = new ArrayList<>();
       for (Object object : objects)
       {
-         parmClasses.add(object.getClass());
+         if (object != null)
+         {
+            parmClasses.add(object.getClass());
+         }
+         else
+         {
+            parmClasses.add(Object.class);
+         }
       }
       Set<Method> methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
             ReflectionUtils.withParametersCount(objects.size()));
@@ -380,7 +388,7 @@ public final class Manager
                for (int i = 0; i < pcls.length; i++)
                {
                   Class<?> pcl = pcls[i];
-                  if ((!pcl.isAssignableFrom(objects.get(i).getClass())) && (pcl.isEnum()))
+                  if ((!pcl.isAssignableFrom(parmClasses.get(i))) && (pcl.isEnum()))
                   {
                      found = false;
                      break;
@@ -469,6 +477,7 @@ public final class Manager
     * @return true, if successful
     */
    @SuppressWarnings("unchecked")
+   public
    static String searchMethod(Object target, String methName, int nbParms)
    {
       String root = methName.substring(0, 1).toUpperCase() + methName.substring(1);
@@ -526,6 +535,7 @@ public final class Manager
     * @return true, if successful
     */
    @SuppressWarnings("unchecked")
+   public
    static Field searchField(Object target, String fieldName)
    {
       Field ret = null;
@@ -577,7 +587,7 @@ public final class Manager
     * @param name the class name (maybe lower case)
     * @return the class
     */
-   static Class<?> searchClass(String namespace, String name)
+   public static Class<?> searchClass(String namespace, String name)
    {
       String clName = name;
 
@@ -639,7 +649,7 @@ public final class Manager
     * @param attrs the attributes to set
     * @return the new class instance
     */
-   static Object getInstance(String namespace, String name, Attributes attrs)
+   public static Object getInstance(String namespace, String name, Attributes attrs)
    {
       Class<?> cl = searchClass(namespace, name);
       //
@@ -694,7 +704,7 @@ public final class Manager
     * @param value the value
     * @return true, if successful
     */
-   static boolean setOrAddAttribute(Class<?> cl, Object target, String key, Object value)
+   public static boolean setOrAddAttribute(Class<?> cl, Object target, String key, Object value)
    {
       // Search for a simple method
       if (searchAndRunMethod(cl, target, null, key, value))
@@ -719,7 +729,7 @@ public final class Manager
       {
          Field field = cl.getDeclaredField(key);
          field.setAccessible(true);
-         if (testPrimitive(field.getType()))
+         if ((testPrimitive(field.getType())) && (value != null))
          {
             Object parm = getSimpleObject(field.getType(), value.toString());
             if (parm != null)
@@ -760,10 +770,11 @@ public final class Manager
     * @param value the value as a String
     * @return the simple object parsed from the string, or null
     */
-   static Object getSimpleObject(Class<?> clazz, String value)
+   public static Object getSimpleObject(Class<?> clazz, String value)
    {
-
       Object parm = null;
+   try
+   {
       if (clazz == Long.class || clazz == long.class)
       {
          parm = Long.parseLong(value);
@@ -800,13 +811,19 @@ public final class Manager
       {
          parm = value;
       }
+   }
+   catch (NumberFormatException ex)
+   {
+      // bad format. Return null.
+   }
       return parm;
    }
 
-   static boolean verifyNotReserved(String className)
+   public static boolean verifyNotReserved(String className)
    {
       switch (className)
       {
+         case "int":
          case "integer":
          case "boolean":
          case "long":
@@ -822,7 +839,7 @@ public final class Manager
       }
    }
 
-   static boolean verifyNotReservedContainer(String className)
+   public static boolean verifyNotReservedContainer(String className)
    {
       switch (className)
       {
@@ -847,10 +864,11 @@ public final class Manager
     * @param className the class name
     * @return the object
     */
-   static Object createReserved(String className)
+   public static Object createReserved(String className)
    {
       switch (className)
       {
+         case "int":
          case "integer":
             return new Integer(0);
          case "boolean":
@@ -971,7 +989,7 @@ public final class Manager
                method.setAccessible(true);
                Parameter parameter = method.getParameters()[0];
                Class<?> clazz = parameter.getType();
-               if (testPrimitive(clazz))
+               if ((testPrimitive(clazz)) && (value != null))
                {
                   Object parm = getSimpleObject(clazz, value.toString());
                   method.invoke(target, parm);
@@ -1072,7 +1090,7 @@ public final class Manager
     * @param child the child
     * @return true, if successful
     */
-   static boolean addObjectInObject(Object parent, Object child)
+   public static boolean addObjectInObject(Object parent, Object child)
    {
       // try using adding the object (ex: for use for adding AWT elements in a Container)
       @SuppressWarnings("unchecked")
