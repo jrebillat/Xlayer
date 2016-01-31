@@ -1,5 +1,6 @@
 package net.alantea.xlayer.bundles;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,15 @@ public class ArrayBundle extends BaseBundle
       // put all children values into an array and set it as value
       List<Object> ret = new ArrayList<>();
       children.forEach((child) -> ret.add(child.getValue()));
-      setValue(ret.toArray());
+      // TODO change this if possible
+      // we consider that all elements are the same class as first
+      // Should instead calculate the common class for all elements
+      Object[] arr = new Object[0];
+      if (!ret.isEmpty())
+      {
+         arr = (Object[]) Array.newInstance(ret.get(0).getClass(), 0);
+      }
+      setValue(ret.toArray(arr));
       return new ArrayList<>();
    }
 

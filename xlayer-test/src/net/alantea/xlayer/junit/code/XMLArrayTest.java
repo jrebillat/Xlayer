@@ -139,31 +139,31 @@ public class XMLArrayTest
       Assert.assertEquals(((ParsingBaseClass[])ints).length, 3);
    }  
 
-//   @Test
-//   public void ArrayValuesArrayTest()
-//   {
-//      ParsingRoot root = new ParsingRoot();
-//      List<String> errors = Manager.parse(root, HEADER_XML
-//            + "<myArrayArray>"
-//               + "<array>"
-//                  + "<ParsingBaseClass></ParsingBaseClass>"
-//                  + "<ParsingBaseClass></ParsingBaseClass>"
-//               + "</array>"
-//               + "<array>"
-//                  + "<ParsingBaseClass></ParsingBaseClass>"
-//                  + "<ParsingBaseClass></ParsingBaseClass>"
-//            + "</array>"
-//            + "</myArrayArray>");
-//      for (String err : errors)
-//      {
-//         System.out.println(err);
-//      }
-//      Assert.assertTrue(errors.isEmpty());
-//      Object vals = root.getMyArrayArray();
-//      Assert.assertNotNull(vals);
-//      Assert.assertTrue(ParsingBaseClass[][].class.isAssignableFrom(vals.getClass()));
-//      Assert.assertEquals(((ParsingBaseClass[][])vals).length, 2);
-//   }
+   @Test
+   public void ArrayValuesArrayTest()
+   {
+      ParsingRoot root = new ParsingRoot();
+      List<String> errors = Manager.parse(root, HEADER_XML
+            + "<myArrayArray>"
+               + "<array>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+               + "</array>"
+               + "<array>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+            + "</array>"
+            + "</myArrayArray>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object vals = root.getMyArrayArray();
+      Assert.assertNotNull(vals);
+      Assert.assertTrue(ParsingBaseClass[][].class.isAssignableFrom(vals.getClass()));
+      Assert.assertEquals(((ParsingBaseClass[][])vals).length, 2);
+   }
 
    @Test
    public void EmptyValuesArrayTest()

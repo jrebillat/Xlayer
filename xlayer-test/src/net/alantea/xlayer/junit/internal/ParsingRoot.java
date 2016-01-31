@@ -32,8 +32,14 @@ public class ParsingRoot
    /** The list list. */
    List<List<ParsingBaseClass>> myListList;
    
+   /** The array list. */
+   List<ParsingBaseClass[]> myArrayList;
+   
    /** The array array. */
    ParsingBaseClass[][] myArrayArray;
+   
+   /** The list array. */
+   List<ParsingBaseClass>[] myListArray;
    
    /**
     * Gets the value.
@@ -218,5 +224,37 @@ public class ParsingRoot
    public void setMyArrayArray(ParsingBaseClass[][] myArrayArray)
    {
       this.myArrayArray = myArrayArray;
+   }
+
+   /**
+    * @return the myArrayList
+    */
+   public List<ParsingBaseClass[]> getMyArrayList()
+   {
+      return myArrayList;
+   }
+
+   /**
+    * @param myArrayList the myArrayList to set
+    */
+   public void setMyArrayList(List<ParsingBaseClass[]> myArrayList)
+   {
+      this.myArrayList = myArrayList;
+   }
+
+   /**
+    * @return the myListArray
+    */
+   public List<ParsingBaseClass>[] getMyListArray()
+   {
+      return myListArray;
+   }
+
+   /**
+    * @param myListArray the myListArray to set
+    */
+   public void setMyListArray(List<ParsingBaseClass>[] myListArray)
+   {
+      this.myListArray = myListArray;
    }
 }
