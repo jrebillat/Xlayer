@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -359,6 +360,7 @@ public final class Manager
    {
       MethodReturnedInformation info = new MethodReturnedInformation();
       boolean oneArg = false;
+      boolean useArray = false;
       List<Class<?>> parmClasses = new ArrayList<>();
       for (Object object : objects)
       {
@@ -398,6 +400,17 @@ public final class Manager
                if (found)
                {
                   meth = method;
+                  if ((meth.getParameterCount() == 1) && (meth.getParameterTypes()[0].isArray()))
+                  {
+                     oneArg = true;
+                     useArray = true;
+                  }
+                  else if ((meth.getParameterCount() == 1)
+                        && (List.class.isAssignableFrom(meth.getParameterTypes()[0])))
+                  {
+                     oneArg = true;
+                     useArray = false;
+                  }
                   break;
                }
             }
@@ -405,13 +418,22 @@ public final class Manager
       }
       else
       {
-         // search for one List parameter
+         // search for one List or Array parameter
          oneArg = true;
          methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
                ReflectionUtils.withParametersCount(1));
          if (!methods.isEmpty())
          {
             meth = methods.toArray(new Method[0])[0];
+            if ((meth.getParameterCount() == 1) && (meth.getParameterTypes()[0].isArray()))
+            {
+               useArray = true;
+            }
+            else if ((meth.getParameterCount() == 1)
+                  && (List.class.isAssignableFrom(meth.getParameterTypes()[0])))
+            {
+               useArray = false;
+            }
          }
       }
 
@@ -421,8 +443,41 @@ public final class Manager
          {
             if (oneArg)
             {
+               Object ret = null;
                meth.setAccessible(true);
-               Object ret = meth.invoke(target, objects);
+               
+               // get rid of 'intermediate' unneeded List layer
+               List<Object> objs = objects;
+               if ((objects.size() == 1) && (List.class.isAssignableFrom(objects.get(0).getClass())))
+               {
+                  objs = (List<Object>) objects.get(0);
+               }
+               else if ((objects.size() == 1) && (objects.get(0).getClass().isArray()))
+               {
+                  objs = new ArrayList<>();
+                  Object[] objArr = (Object[])objects.get(0);
+                  for (int i = 0; i < objArr.length; i++)
+                  {
+                     objs.add(objArr[i]);
+                  }
+               }
+               
+               // Convert to array, then call
+               if (useArray)
+               {
+                  Class<?> arrayComponentType = meth.getParameterTypes()[0].getComponentType();
+                  Object[] arr = (Object[]) Array.newInstance(arrayComponentType, objs.size());
+                  for (int i = 0; i < objs.size(); i++)
+                  {
+                     arr[i] = objs.get(i);
+                  }
+                  ret = meth.invoke(target, new Object[]{arr});
+               }
+               // call directly
+               else
+               {
+                  ret = meth.invoke(target, objs);
+               }
                info.setValue(ret);
                info.setNonvoid(!meth.getReturnType().equals(Void.class));
             }

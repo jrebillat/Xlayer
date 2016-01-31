@@ -41,6 +41,7 @@ public class XMLListTest
       Object ints = root.getMyList();
       Assert.assertNotNull(ints);
       Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
+      Assert.assertEquals(((List<Integer>)ints).size(), 4);
       for (int i = 0; i < ((List<Integer>)ints).size(); i++)
       {
          Assert.assertEquals(((List<Integer>)ints).get(i++), new Integer(i));
@@ -94,6 +95,54 @@ public class XMLListTest
       Assert.assertNotNull(ints);
       Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
       Assert.assertEquals(((List<ParsingBaseClass>)ints).size(), 3);
+   }  
+
+   @SuppressWarnings("unchecked")
+   @Test
+   public void OneValueListTest()
+   {
+      ParsingRoot root = new ParsingRoot();
+      List<String> errors = Manager.parse(root, HEADER_XML
+            + "<myList>"
+                  + "<integer>1</integer>"
+            + "</myList>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object ints = root.getMyList();
+      Assert.assertNotNull(ints);
+      Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
+      Assert.assertEquals(((List<Integer>)ints).size(), 1);
+      for (int i = 0; i < ((List<Integer>)ints).size(); i++)
+      {
+         Assert.assertEquals(((List<Integer>)ints).get(i++), new Integer(i));
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   @Test
+   public void OneValueList2Test()
+   {
+      ParsingRoot root = new ParsingRoot();
+      List<String> errors = Manager.parse(root, HEADER_XML
+            + "<myList><list>"
+                  + "<integer>1</integer>"
+            + "</list></myList>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object ints = root.getMyList();
+      Assert.assertNotNull(ints);
+      Assert.assertTrue(List.class.isAssignableFrom(ints.getClass()));
+      Assert.assertEquals(((List<Integer>)ints).size(), 1);
+      for (int i = 0; i < ((List<Integer>)ints).size(); i++)
+      {
+         Assert.assertEquals(((List<Integer>)ints).get(i), new Integer(i+1));
+      }
    }  
 
    @SuppressWarnings("unchecked")

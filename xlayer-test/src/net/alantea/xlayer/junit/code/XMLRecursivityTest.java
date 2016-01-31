@@ -122,7 +122,7 @@ public class XMLRecursivityTest
    }
 
    @Test
-   public void SimpleInMethodTest()
+   public void simpleInMethodTest()
    {
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><changeValue><integer>33</integer></changeValue></ParsingRoot>");

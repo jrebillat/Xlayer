@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
+import net.alantea.xlayer.bundles.ArrayBundle;
 import net.alantea.xlayer.bundles.BaseBundle;
 import net.alantea.xlayer.bundles.CharsBundle;
 import net.alantea.xlayer.bundles.ConstantBundle;
@@ -212,6 +213,12 @@ public class Handler extends DefaultHandler
       else if ("list".equals(localName))
       {
          currentBundle = new ListBundle(fatherBundle);
+      }
+      
+      // Create array
+      else if ("array".equals(localName))
+      {
+         currentBundle = new ArrayBundle(fatherBundle);
       }
       
       // load a variable

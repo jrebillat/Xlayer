@@ -57,6 +57,12 @@
     </classes>
   </test>
   
+  <test name="Xml array use">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLArrayTest" />
+    </classes>
+  </test>
+  
   <test name="Xml variable">
     <classes>
        <class name="net.alantea.xlayer.junit.code.XMLVariableTest" />
