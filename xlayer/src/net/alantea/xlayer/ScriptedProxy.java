@@ -1,7 +1,6 @@
 package net.alantea.xlayer;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
@@ -47,7 +46,6 @@ public class ScriptedProxy
       {
          if (objectMeth.equals(method))
          {
-            System.out.println(objectMeth.getName());
             return null;
          }
       }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xlayer xmlns:swg='javax.swing'>
 	<?package java.awt.event?>
-	<swg:jFrame title="HelloWorldSwing" width='200' height='150'>
+	<swg:jFrame title="HelloWorldSwing">
 		<defaultCloseOperation>
 			<constant class='javax.swing.JFrame' name='EXIT_ON_CLOSE' />
 		</defaultCloseOperation>
@@ -27,6 +27,7 @@
 				</addActionListener>
 			</jButton>
 		</jPanel>
+		<pack/>
 		<visible>true</visible>
 	</swg:jFrame>
 </xlayer>

@@ -21,16 +21,16 @@ public abstract class BaseBundle
    /** The father bundle. */
    private BaseBundle fatherBundle;
    
-   /** The children bundles */
+   /**  The children bundles. */
    List<BaseBundle> children = new ArrayList<>();
    
-   /** Whether the bundle concerns a valid information */
+   /**  Whether the bundle concerns a valid information. */
    private boolean valid;
    
    /** The returned value. */
    private Object value;
    
-   /** The variable name. */
+   /** The variable name to store content. */
    private String varName;
 
    //-------------------------------------------------------------------
@@ -85,6 +85,8 @@ public abstract class BaseBundle
    }
 
    /**
+    * Sets the father bundle.
+    *
     * @param fatherBundle the fatherBundle to set
     */
    public void setFatherBundle(BaseBundle fatherBundle)
@@ -111,7 +113,10 @@ public abstract class BaseBundle
    {
       return value;
    }
+
    /**
+    * Gets the children.
+    *
     * @return the children
     */
    public List<BaseBundle> getChildren()
@@ -120,6 +125,8 @@ public abstract class BaseBundle
    }
 
    /**
+    * Sets the children.
+    *
     * @param children the children to set
     */
    public void setChildren(List<BaseBundle> children)
@@ -128,6 +135,8 @@ public abstract class BaseBundle
    }
 
    /**
+    * Adds the child.
+    *
     * @param child the child to add
     */
    public void addChild(BaseBundle child)
@@ -139,6 +148,11 @@ public abstract class BaseBundle
    // Methods
    //-------------------------------------------------------------------
    
+   /**
+    * Merge children returned values.
+    *
+    * @return the object
+    */
    protected Object mergeChildrenReturnedValues()
    {
       if (children.size() == 1)
@@ -152,6 +166,11 @@ public abstract class BaseBundle
       return value;
    }
    
+   /**
+    * Gets the parameters.
+    *
+    * @return the parameters
+    */
    protected List<Object> getParameters()
    {
       List<Object> compound = new ArrayList<>();
@@ -199,6 +218,11 @@ public abstract class BaseBundle
       return ret;
    }
    
+   /**
+    * Gets the current object. The object is the value, or the current object of father if null.
+    *
+    * @return the current object
+    */
    public Object getCurrentObject()
    {
       if (value != null)

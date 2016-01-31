@@ -8,20 +8,33 @@ import org.xml.sax.Attributes;
 import net.alantea.xlayer.Handler;
 import net.alantea.xlayer.Manager;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Bundle to handle constants or Enum values access in classes.
+ */
 public class ConstantBundle extends BaseBundle
 {
 
+   /**
+    * Instantiates a new constant bundle.
+    *
+    * @param father the father
+    */
    public ConstantBundle(BaseBundle father)
    {
       super(father);
    }
 
+   /* (non-Javadoc)
+    * @see net.alantea.xlayer.bundles.BaseBundle#startElement(net.alantea.xlayer.Handler, java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+    */
    @Override
    protected List<String> startElement(Handler handler, String namespaceURI, String localName, String qName,
          Attributes atts)
    {
       List<String> errors = new ArrayList<String>();
 
+      // Get constant name
       String cstName = atts.getValue("name");
       if (cstName == null)
       {
@@ -30,6 +43,7 @@ public class ConstantBundle extends BaseBundle
       }
       else
       {
+         // get constant class
          String cstClass = atts.getValue("class");
          if (cstClass == null)
          {
@@ -38,6 +52,7 @@ public class ConstantBundle extends BaseBundle
          }
          else
          {
+            // Search for class
             Class<?> cl = Manager.searchClass("", cstClass);
             if (cl == null)
             {
@@ -46,6 +61,7 @@ public class ConstantBundle extends BaseBundle
             }
             else
             {
+               // Get correct value
                try
                {
                   setValue(cl.getField(cstName).get(null));
@@ -66,6 +82,9 @@ public class ConstantBundle extends BaseBundle
       return errors;
    }
 
+   /* (non-Javadoc)
+    * @see net.alantea.xlayer.bundles.BaseBundle#endElement(net.alantea.xlayer.Handler, java.lang.String, java.lang.String, java.lang.String)
+    */
    @Override
    protected List<String> endElement(Handler handler, String uri, String localName, String qName)
    {

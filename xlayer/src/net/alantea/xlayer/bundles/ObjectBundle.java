@@ -8,17 +8,32 @@ import org.xml.sax.Attributes;
 import net.alantea.xlayer.Handler;
 import net.alantea.xlayer.Manager;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ObjectBundle.
+ */
 public class ObjectBundle extends BaseBundle
 {
+   
+   /** Indicate whether we have a reserved object (base type or derived). */
    private boolean reserved;
    
+   /** The content. */
    private Object content;
    
+   /**
+    * Instantiates a new object bundle.
+    *
+    * @param father the father
+    */
    public ObjectBundle(BaseBundle father)
    {
       super(father);
    }
 
+   /* (non-Javadoc)
+    * @see net.alantea.xlayer.bundles.BaseBundle#startElement(net.alantea.xlayer.Handler, java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+    */
    @Override
    protected List<String> startElement(Handler handler, String namespace, String localName, String qName,
          Attributes atts)
@@ -30,6 +45,7 @@ public class ObjectBundle extends BaseBundle
       String classAttr = atts.getValue("_class");
       if (classAttr != null)
       {
+         // search for nase and derived classes
          Class<?> baseClass = Manager.searchClass(namespace, localName);
          Class<?> derivedClass = Manager.searchClass(namespace, classAttr);
          if (baseClass == null)
@@ -44,22 +60,26 @@ public class ObjectBundle extends BaseBundle
             errors.add("Invalid object definition : class " + classAttr + " not reachable");
             return errors;
          }
+         // verify that the derived class is correct
          else if (!baseClass.isAssignableFrom(derivedClass))
          {
             this.setValid(false);
             errors.add("Invalid object definition : class " + localName + " is not assignable from " + classAttr);
             return errors;
          }
+         // substitute class name
          className = classAttr;
       }
       
       content = null;
+      // If not reserved, we can already instantiate the content
       if ((Manager.verifyNotReserved(className)) && (Manager.verifyNotReservedContainer(className)))
       {
          content = Manager.getInstance(namespace, className, atts);
       }
       else
       {
+         // create value, just not to have null for children if they need their father class
          reserved = true;
          content = Manager.createReserved(className);
       }
@@ -69,7 +89,7 @@ public class ObjectBundle extends BaseBundle
       }
       else
       {
-         // apply attributes
+         // apply attributes as fields
          for (int i = 0; i < atts.getLength(); i++)
          {
             String key = atts.getLocalName(i);
@@ -80,10 +100,15 @@ public class ObjectBundle extends BaseBundle
       return errors;
    }
 
+   /* (non-Javadoc)
+    * @see net.alantea.xlayer.bundles.BaseBundle#endElement(net.alantea.xlayer.Handler, java.lang.String, java.lang.String, java.lang.String)
+    */
    @Override
    protected List<String> endElement(Handler handler, String uri, String localName, String qName)
    {
       List<String> errors = new ArrayList<>();
+      
+      // Reserved class : we need to recreate one.
       if (reserved)
       {
          Object o = mergeChildrenReturnedValues();
@@ -93,6 +118,7 @@ public class ObjectBundle extends BaseBundle
             return errors;
          }
          
+         // Create new value
          Object val = Manager.getSimpleObject(content.getClass(), o.toString());
 
          if (val == null)
@@ -108,24 +134,30 @@ public class ObjectBundle extends BaseBundle
             setValue(val);
          }
       }
-      else if (getClass().equals(ObjectBundle.class) && (getChildren().size() >= 1))
-      {
-         for (BaseBundle bundle : getChildren())
-         {
-            if (bundle.getClass().equals(ObjectBundle.class))
-            {
-               Manager.addObjectInObject(content, ((ObjectBundle)bundle).content);
-            }
-         }
-         setValue(content);
-      }
       else
       {
+         // just set contznt as value
          setValue(content);
+      }
+      
+      // add it in father if they both are objects
+      if (getClass().equals(ObjectBundle.class) && (getFatherBundle().getClass().equals(ObjectBundle.class)))
+      {
+         Manager.addObjectInObject(((ObjectBundle)getFatherBundle()).content, content);
+      }
+      // Add it in father if it is a non-null root
+      else if (getClass().equals(ObjectBundle.class) 
+            && (getFatherBundle().getClass().equals(RootBundle.class))
+            && (getFatherBundle().getValue() != null))
+      {
+         Manager.addObjectInObject(getFatherBundle().getValue(), content);
       }
       return errors;
    }
    
+   /* (non-Javadoc)
+    * @see net.alantea.xlayer.bundles.BaseBundle#getCurrentObject()
+    */
    @Override
    public Object getCurrentObject()
    {
@@ -139,6 +171,11 @@ public class ObjectBundle extends BaseBundle
       }
    }
    
+   /**
+    * Checks if is reserved.
+    *
+    * @return true, if is reserved
+    */
    protected boolean isReserved()
    {
       return reserved;

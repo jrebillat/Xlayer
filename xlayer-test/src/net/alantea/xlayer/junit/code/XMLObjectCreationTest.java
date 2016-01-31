@@ -63,7 +63,7 @@ public class XMLObjectCreationTest
       // after adding package
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myParsingRoot'>"
-            + "<testObject><ParsingDerivedClass _put='myParsingObject1'/></testObject>"
+            + "<testObject _class='ParsingDerivedClass' _put='myParsingObject1'></testObject>"
             + "</ParsingRoot>");
       for (String err : errors)
       {

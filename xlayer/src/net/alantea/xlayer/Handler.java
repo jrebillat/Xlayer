@@ -76,6 +76,9 @@ public class Handler extends DefaultHandler
       // nothing so far
    }
 
+   /* (non-Javadoc)
+    * @see org.xml.sax.helpers.DefaultHandler#processingInstruction(java.lang.String, java.lang.String)
+    */
    @Override
    public void processingInstruction (String target, String data)
          throws SAXException
@@ -100,7 +103,7 @@ public class Handler extends DefaultHandler
    }
    
    /**
-    * Strip chain.
+    * Strip chain from starting ' or " characters.
     *
     * @param data the data
     * @return the string
@@ -229,14 +232,21 @@ public class Handler extends DefaultHandler
             {
                parm = Manager.getInstance(namespaceURI, objClass, new AttributesImpl());
             }
-            
-            if (Manager.searchMethod(fatherObject, localName, -1) != null)
+
+            // Search for fields to put an object in
+            if ((objClass != null) && (Manager.searchField(fatherObject, localName) != null))
+            {
+               currentBundle = new FieldBundle(fatherBundle);
+            }
+            // search for a method
+            else if (Manager.searchMethod(fatherObject, localName, -1) != null)
             {
                currentBundle = new MethodBundle(fatherBundle);
             }
+            // search for a field without setter (else it was found just before)
             else if ( Manager.searchField(fatherObject, localName) != null)
             {
-               currentBundle = new FieldBundle(fatherBundle, localName);
+               currentBundle = new FieldBundle(fatherBundle);
             }
             
             if (parm != null)
@@ -245,13 +255,14 @@ public class Handler extends DefaultHandler
             }
          }
          
-         // nothing found so far
+         // nothing found so far. Presume this is an object
          if (currentBundle == null)
          {
             currentBundle = new ObjectBundle(fatherBundle);
          }
       }
       
+      // Launch specific handling of start element
       if (currentBundle != null)
       {
          addErrors(currentBundle.manageStartElement(this, namespaceURI, localName, qName, atts));
@@ -273,13 +284,17 @@ public class Handler extends DefaultHandler
    public void endElement(String uri, String localName,
          String qName)
    {
+      // Add a chars bundle if string found
       if (!concatChars.isEmpty())
       {
          new CharsBundle(currentBundle, concatChars);
+         // clear for next call
          concatChars = "";
       }
+      
       if (currentBundle.isValid())
       {
+         // Launch specific handling of end element
          addErrors(currentBundle.manageEndElement(this, uri, localName, qName));
       }
       currentBundle = currentBundle.getFatherBundle();
