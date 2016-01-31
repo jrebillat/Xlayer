@@ -1,4 +1,4 @@
-package net.alantea.xlayer;
+package net.alantea.xlayer.util;
 
 /**
  * The Class Variable.
@@ -7,10 +7,10 @@ public class Variable
 {
    
    /** The name. */
-   String name;
+   private String name;
    
    /** The object. */
-   Object object;
+   private Object object;
    
    /**
     * Content.
@@ -30,5 +30,21 @@ public class Variable
    public Object getContent()
    {
       return object;
+   }
+
+   /**
+    * @return the name
+    */
+   public String getName()
+   {
+      return name;
+   }
+
+   /**
+    * @param name the name to set
+    */
+   public void setName(String name)
+   {
+      this.name = name;
    }
 }

@@ -1,8 +1,10 @@
-package net.alantea.xlayer;
+package net.alantea.xlayer.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
+import net.alantea.xlayer.util.PrimitiveUtils;
 
 /**
  * The Class InterfaceBridgeProxy, used to make a bridge proxy between an interface and a script.
@@ -56,7 +58,7 @@ public class InterfaceBridgeProxy implements InvocationHandler
          {
             return ret;
          }
-         if (!Manager.verifyNotReservedContainer(ret.getClass().getSimpleName()))
+         if (!PrimitiveUtils.verifyNotReservedContainer(ret.getClass().getSimpleName()))
          {
             return ret;
          }

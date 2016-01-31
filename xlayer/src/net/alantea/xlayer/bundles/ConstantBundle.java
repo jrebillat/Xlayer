@@ -6,7 +6,7 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
+import net.alantea.xlayer.util.ClassUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,7 +53,7 @@ public class ConstantBundle extends BaseBundle
          else
          {
             // Search for class
-            Class<?> cl = Manager.searchClass("", cstClass);
+            Class<?> cl = ClassUtils.searchClass("", cstClass);
             if (cl == null)
             {
                setValid(false);

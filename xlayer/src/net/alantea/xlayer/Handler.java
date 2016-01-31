@@ -23,6 +23,8 @@ import net.alantea.xlayer.bundles.RootBundle;
 import net.alantea.xlayer.bundles.ScriptBundle;
 import net.alantea.xlayer.bundles.SimpleBundle;
 import net.alantea.xlayer.bundles.VariableBundle;
+import net.alantea.xlayer.util.ClassUtils;
+import net.alantea.xlayer.util.MethodUtils;
 
 /**
  * Handler for Xlayer parsing.
@@ -237,7 +239,7 @@ public class Handler extends DefaultHandler
             String objClass = atts.getValue("_class");
             if (objClass != null)
             {
-               parm = Manager.getInstance(namespaceURI, objClass, new AttributesImpl());
+               parm = ClassUtils.getInstance(namespaceURI, objClass, new AttributesImpl());
             }
 
             // Search for fields to put an object in
@@ -246,7 +248,7 @@ public class Handler extends DefaultHandler
                currentBundle = new FieldBundle(fatherBundle);
             }
             // search for a method
-            else if (Manager.searchMethod(fatherObject, localName, -1) != null)
+            else if (MethodUtils.searchMethod(fatherObject, localName, -1) != null)
             {
                currentBundle = new MethodBundle(fatherBundle);
             }

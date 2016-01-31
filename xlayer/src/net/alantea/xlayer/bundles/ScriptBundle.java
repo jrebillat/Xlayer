@@ -6,8 +6,8 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
-import net.alantea.xlayer.ScriptedProxy;
+import net.alantea.xlayer.proxy.ScriptedProxy;
+import net.alantea.xlayer.util.ClassUtils;
 
 /**
  * Bundle to handle scripts.
@@ -58,7 +58,7 @@ public class ScriptBundle extends BaseBundle
       // Proxy management
       else
       {
-         Object obj = new ScriptedProxy(script).as(Manager.searchClass("", asInterface));
+         Object obj = new ScriptedProxy(script).as(ClassUtils.searchClass("", asInterface));
          setValue(obj);
       }
       return null;

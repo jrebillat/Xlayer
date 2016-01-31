@@ -1,4 +1,4 @@
-package net.alantea.xlayer;
+package net.alantea.xlayer.proxy;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -6,6 +6,9 @@ import java.util.Map;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+
+import net.alantea.xlayer.Handler;
+import net.alantea.xlayer.Manager;
 
 /**
  * The Class ScriptedProxy.

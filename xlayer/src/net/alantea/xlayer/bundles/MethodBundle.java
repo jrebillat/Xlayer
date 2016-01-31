@@ -6,8 +6,8 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
-import net.alantea.xlayer.MethodReturnedInformation;
+import net.alantea.xlayer.util.MethodReturnedInformation;
+import net.alantea.xlayer.util.MethodUtils;
 
 /**
  * Bundle to handle methods.
@@ -45,10 +45,10 @@ public class MethodBundle extends BaseBundle
       List<String> errors = new ArrayList<>();
       
       // search for method
-      String methName = Manager.searchMethod(getCurrentObject(), localName, -1);
+      String methName = MethodUtils.searchMethod(getCurrentObject(), localName, -1);
       
       // apply it
-      MethodReturnedInformation ret = Manager.applyMethod(getCurrentObject(), methName, getParameters());
+      MethodReturnedInformation ret = MethodUtils.applyMethod(getCurrentObject(), methName, getParameters());
       
       if (!ret.isSuccess())
       {
