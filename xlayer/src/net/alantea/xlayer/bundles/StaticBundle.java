@@ -40,7 +40,7 @@ public class StaticBundle extends BaseBundle
       List<String> errors = new ArrayList<String>();
 
       // Get method name
-      methName = atts.getValue("name");
+      methName = atts.getValue("method");
       if (methName == null)
       {
          setValid(false);

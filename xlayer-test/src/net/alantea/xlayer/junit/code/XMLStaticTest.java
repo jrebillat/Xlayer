@@ -25,7 +25,7 @@ public class XMLStaticTest
    {
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<xlayer>"
-            + "<static class='ParsingRoot' name='putValue'>32</static>"
+            + "<static class='ParsingRoot' method='putValue'>32</static>"
             + "</xlayer>");
       for (String err : errors)
       {
@@ -41,7 +41,7 @@ public class XMLStaticTest
    {
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<xlayer>"
-            + "<static class='UnknownClass' name='putValue'>32</static>"
+            + "<static class='UnknownClass' method='putValue'>32</static>"
             + "</xlayer>");
       for (String err : errors)
       {
@@ -55,7 +55,7 @@ public class XMLStaticTest
    {
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<xlayer>"
-            + "<static class='ParsingRoot' name='unknownMethod'>32</static>"
+            + "<static class='ParsingRoot' method='unknownMethod'>32</static>"
             + "</xlayer>");
       for (String err : errors)
       {
@@ -69,7 +69,7 @@ public class XMLStaticTest
    {
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<xlayer>"
-            + "<static class='ParsingRoot' name='putValue'>Test me</static>"
+            + "<static class='ParsingRoot' method='putValue'>Test me</static>"
             + "</xlayer>");
       for (String err : errors)
       {
