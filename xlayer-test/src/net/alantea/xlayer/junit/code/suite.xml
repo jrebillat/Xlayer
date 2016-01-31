@@ -87,4 +87,10 @@
     </classes>
   </test>
   
+  <test name="Static method test">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLStaticTest" />
+    </classes>
+  </test>
+  
 </suite>  	

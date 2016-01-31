@@ -8,6 +8,10 @@ import java.util.List;
  */
 public class ParsingRoot
 {
+   
+   /** The static value. */
+   private static int staticValue;
+   
    /** The value. */
    int value;
 
@@ -256,5 +260,29 @@ public class ParsingRoot
    public void setMyListArray(List<ParsingBaseClass>[] myListArray)
    {
       this.myListArray = myListArray;
+   }
+
+   /**
+    * @return the staticValue
+    */
+   public static int getStaticValue()
+   {
+      return staticValue;
+   }
+
+   /**
+    * @param staticValue the staticValue to set
+    */
+   public static void setStaticValue(int staticValue)
+   {
+      ParsingRoot.staticValue = staticValue;
+   }
+
+   /**
+    * @return the staticValue
+    */
+   public static void putValue(int val)
+   {
+      ParsingRoot.staticValue = val;
    }
 }

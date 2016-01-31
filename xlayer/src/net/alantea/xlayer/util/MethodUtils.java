@@ -267,6 +267,17 @@ public final class MethodUtils
   {
      boolean oneArg = false;
      boolean useArray = false;
+     Class<?> targetClass = null;
+     Object targetObject = target;
+     if (target instanceof Class)
+     {
+        targetClass = (Class<?>) target;
+        targetObject = null;
+     }
+     else
+     {
+        targetClass = target.getClass();
+     }
      List<Class<?>> parmClasses = new ArrayList<>();
      for (Object object : objects)
      {
@@ -279,7 +290,7 @@ public final class MethodUtils
            parmClasses.add(Object.class);
         }
      }
-     Set<Method> methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
+     Set<Method> methods = ReflectionUtils.getAllMethods(targetClass, ReflectionUtils.withName(methName),
            ReflectionUtils.withParametersCount(objects.size()));
 
      Method meth = null;
@@ -326,7 +337,7 @@ public final class MethodUtils
      {
         // search for one List or Array parameter
         oneArg = true;
-        methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
+        methods = ReflectionUtils.getAllMethods(targetClass, ReflectionUtils.withName(methName),
               ReflectionUtils.withParametersCount(1));
         if (!methods.isEmpty())
         {
@@ -342,7 +353,7 @@ public final class MethodUtils
            }
         }
      }
-     return launchMethod(meth, methName, target, pcls, objects, oneArg, useArray);
+     return launchMethod(meth, methName, targetObject, pcls, objects, oneArg, useArray);
   }
   
   @SuppressWarnings("unchecked")

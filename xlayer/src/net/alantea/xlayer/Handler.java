@@ -22,6 +22,7 @@ import net.alantea.xlayer.bundles.ObjectBundle;
 import net.alantea.xlayer.bundles.RootBundle;
 import net.alantea.xlayer.bundles.ScriptBundle;
 import net.alantea.xlayer.bundles.SimpleBundle;
+import net.alantea.xlayer.bundles.StaticBundle;
 import net.alantea.xlayer.bundles.VariableBundle;
 import net.alantea.xlayer.util.ClassUtils;
 import net.alantea.xlayer.util.MethodUtils;
@@ -221,6 +222,12 @@ public class Handler extends DefaultHandler
       else if ("array".equals(localName))
       {
          currentBundle = new ArrayBundle(fatherBundle);
+      }
+      
+      // Create array
+      else if ("static".equals(localName))
+      {
+         currentBundle = new StaticBundle(fatherBundle);
       }
       
       // load a variable
