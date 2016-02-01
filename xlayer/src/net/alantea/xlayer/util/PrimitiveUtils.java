@@ -181,4 +181,60 @@ public final class PrimitiveUtils
    }
       return parm;
    }
+   
+   public static boolean comparePrimitive(Class<?> class1, Class<?> class2)
+   {
+      if ((verifyNotReservedContainer(class1.getSimpleName())) && (verifyNotReserved(class1.getSimpleName())))
+      {
+         return false;
+      }
+      if ((verifyNotReservedContainer(class2.getSimpleName())) && (verifyNotReserved(class2.getSimpleName())))
+      {
+         return false;
+      }
+      
+      if ((class1.equals(Integer.TYPE) || (class1.equals(Integer.class)))
+            && (class1.equals(Integer.TYPE) || (class1.equals(Integer.class))))
+      {
+         return true;
+      }
+      
+      if ((class1.equals(Float.TYPE) || (class1.equals(Float.class)))
+            && (class1.equals(Float.TYPE) || (class1.equals(Float.class))))
+      {
+         return true;
+      }
+      
+      if ((class1.equals(Double.TYPE) || (class1.equals(Double.class)))
+            && (class1.equals(Double.TYPE) || (class1.equals(Double.class))))
+      {
+         return true;
+      }
+      
+      if ((class1.equals(Long.TYPE) || (class1.equals(Long.class)))
+            && (class1.equals(Long.TYPE) || (class1.equals(Long.class))))
+      {
+         return true;
+      }
+      
+      if ((class1.equals(Byte.TYPE) || (class1.equals(Byte.class)))
+            && (class1.equals(Byte.TYPE) || (class1.equals(Byte.class))))
+      {
+         return true;
+      }
+      
+      if ((class1.equals(Short.TYPE) || (class1.equals(Short.class)))
+            && (class1.equals(Short.TYPE) || (class1.equals(Short.class))))
+      {
+         return true;
+      }
+      
+      if ((class1.equals(Boolean.TYPE) || (class1.equals(Boolean.class)))
+            && (class1.equals(Boolean.TYPE) || (class1.equals(Boolean.class))))
+      {
+         return true;
+      }
+      
+      return false;
+   }
 }

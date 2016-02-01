@@ -304,16 +304,21 @@ public final class MethodUtils
            if (pcls.length == objects.size())
            {
               found = true;
+              
               for (int i = 0; i < pcls.length; i++)
               {
                  Class<?> pcl = pcls[i];
-                 if ((!pcl.isAssignableFrom(parmClasses.get(i))) && (pcl.isEnum()))
+                 if ((!pcl.isAssignableFrom(parmClasses.get(i)))
+                       && (!PrimitiveUtils.comparePrimitive(pcl, parmClasses.get(i)))
+                       && (!(pcl.isArray() && (List.class.isAssignableFrom(parmClasses.get(i)) || pcls.length == 1)))
+                       && (!((parmClasses.get(i).isArray() || pcls.length == 1) && List.class.isAssignableFrom(pcl)))
+                    )
                  {
                     found = false;
                     break;
                  }
               }
-
+              
               if (found)
               {
                  meth = method;
@@ -361,6 +366,7 @@ private static MethodReturnedInformation launchMethod(Method meth, String methNa
         List<Object> objects, boolean oneArg, boolean useArray)
   {
      MethodReturnedInformation info = new MethodReturnedInformation();
+     String parmInfo = "";
      if (meth != null)
      {
         try
@@ -412,6 +418,7 @@ private static MethodReturnedInformation launchMethod(Method meth, String methNa
               for (int i = 0; i < pcls.length; i++)
               {
                  Class<?> pcl = pcls[i];
+                 parmInfo += " " + objects.get(i).getClass().getSimpleName() + " (" + pcl.getSimpleName() + ")";
                  Object obj = PrimitiveUtils.getSimpleObject(pcl, objects.get(i).toString());
                  if (obj != null)
                  {
@@ -440,11 +447,12 @@ private static MethodReturnedInformation launchMethod(Method meth, String methNa
         catch (NullPointerException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
         {
            info.setSuccess(false);
-           info.setErrorMessage("Error applying method " + methName);
+           info.setErrorMessage("Error applying method " + methName + " :" + parmInfo);
+           return info;
         }
      }
      info.setSuccess(false);
-     info.setErrorMessage("Impossible to find method " + methName + " with correct arguments.");
+     info.setErrorMessage("Impossible to find method " + methName + " with correct arguments :" + parmInfo);
      return info;
   }
 

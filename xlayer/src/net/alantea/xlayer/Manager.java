@@ -239,7 +239,7 @@ public final class Manager
       {
          SAXParserFactory spf = SAXParserFactory.newInstance();
          spf.setNamespaceAware(true);
-         spf.setXIncludeAware(true);
+//         spf.setXIncludeAware(true);
          SAXParser saxParser = spf.newSAXParser();
 
          XMLReader xmlReader = saxParser.getXMLReader();
@@ -352,6 +352,11 @@ public final class Manager
          return true;
       }
 
+      System.out.println(key);
+      if ("multiline".equals(key))
+      {
+         System.out.println("found");
+      }
       // Search for a set method
       if (MethodUtils.searchAndRunMethod(cl, target, "set", key, value))
       {
