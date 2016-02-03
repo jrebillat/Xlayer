@@ -321,6 +321,20 @@ public final class MethodUtils
               
               if (found)
               {
+                 List<Object> parms = new ArrayList<>();
+                 for (int i = 0; i < objects.size(); i++)
+                 {
+                    if ((objects.get(i) instanceof String) && (! parmClasses.get(i).equals(String.class)))
+                    {
+                       Object parm = PrimitiveUtils.getSimpleObject(parmClasses.get(i), (String) objects.get(i));
+                       parms.add(parm);
+                    }
+                    else
+                    {
+                       parms.add(objects.get(i));
+                    }
+                 }
+                 
                  meth = method;
                  if ((meth.getParameterCount() == 1) && (meth.getParameterTypes()[0].isArray()))
                  {

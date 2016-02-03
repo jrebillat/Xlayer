@@ -352,11 +352,6 @@ public final class Manager
          return true;
       }
 
-      System.out.println(key);
-      if ("multiline".equals(key))
-      {
-         System.out.println("found");
-      }
       // Search for a set method
       if (MethodUtils.searchAndRunMethod(cl, target, "set", key, value))
       {

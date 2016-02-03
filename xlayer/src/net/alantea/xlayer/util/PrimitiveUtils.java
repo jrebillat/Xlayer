@@ -193,6 +193,11 @@ public final class PrimitiveUtils
          return false;
       }
       
+      if (String.class.equals(class2))
+      {
+         return true;
+      }
+      
       if ((class1.equals(Integer.TYPE) || (class1.equals(Integer.class)))
             && (class1.equals(Integer.TYPE) || (class1.equals(Integer.class))))
       {
