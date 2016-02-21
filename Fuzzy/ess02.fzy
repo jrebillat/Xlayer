@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<fuzzy>
+ <condition shape="linear" label="bas1">
+  <input link="i1"/>
+  <start value="0"/>
+  <up value="0"/>
+  <fail value="1"/>
+  <end value="3"/>
+ </condition>
+ <condition shape="linear" label="haut1">
+  <input link="i1"/>
+  <start value="1"/>
+  <up value="3"/>
+  <fail value="4"/>
+  <end value="4"/>
+ </condition>
+ <condition shape="linear" label="bas2">
+  <input link="i2"/>
+  <start value="0"/>
+  <up value="0"/>
+  <fail value="1"/>
+  <end value="3"/>
+ </condition>
+ <condition shape="linear" label="haut2">
+  <input link="i2"/>
+  <start value="1"/>
+  <up value="3"/>
+  <fail value="4"/>
+  <end value="4"/>
+ </condition>
+ <set label="myset">
+  <rule>
+   <and>
+    <condition link="bas1"/>
+    <condition link="bas2"/>
+   </and>
+   <output value="0."/>
+  </rule>
+  <rule>
+   <and>
+    <condition link="haut1"/>
+    <condition link="bas2"/>
+   </and>
+   <output value="10."/>
+  </rule>
+  <rule>
+   <and>
+    <condition link="bas1"/>
+    <condition link="haut2"/>
+   </and>
+   <output value="20."/>
+  </rule>
+  <rule>
+   <and>
+    <condition link="haut1"/>
+    <condition link="haut2"/>
+   </and>
+   <output value="100."/>
+  </rule>
+ </set>
+</fuzzy>

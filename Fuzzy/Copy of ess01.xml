@@ -1,0 +1,46 @@
+http://cchelpdesk.fr.st.space.corp/forum/viewforum.php?f=15<?xml version="1.0"?>
+
+<fuzzy>
+ <set label="myset">
+  <rule>
+   <condition shape="linear" label="nulle">
+    <input link="input"/>
+    <start value="0"/>
+    <up value="0"/>
+    <fail value="5"/>
+    <end value="7"/>
+   </condition>
+   <output value="5."/>
+  </rule>
+  <rule>
+   <condition shape="linear" label="nulle">
+    <input link="input"/>
+    <start value="5"/>
+    <up value="7"/>
+    <fail value="9"/>
+    <end value="10"/>
+   </condition>
+   <output value="10."/>
+  </rule>
+  <rule>
+   <condition shape="linear" label="nulle">
+    <input link="input"/>
+    <start value="9"/>
+    <up value="10"/>
+    <fail value="15"/>
+    <end value="17"/>
+   </condition>
+   <output value="0."/>
+  </rule>
+  <rule>
+   <condition shape="linear" label="nulle">
+    <input link="input"/>
+    <start value="15"/>
+    <up value="17"/>
+    <fail value="20"/>
+    <end value="20"/>
+   </condition>
+   <output value="20."/>
+  </rule>
+ </set>
+</fuzzy>
