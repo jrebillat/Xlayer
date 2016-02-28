@@ -1,4 +1,4 @@
-package net.alantea.xlayer;
+package net.alantea.xlayer.util;
 
 /**
  * The Class MethodReturnedInformation.

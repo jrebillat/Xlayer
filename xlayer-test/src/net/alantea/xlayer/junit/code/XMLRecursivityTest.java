@@ -122,7 +122,7 @@ public class XMLRecursivityTest
    }
 
    @Test
-   public void SimpleInMethodTest()
+   public void simpleInMethodTest()
    {
       List<String> errors = Manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><changeValue><integer>33</integer></changeValue></ParsingRoot>");
@@ -321,5 +321,109 @@ public class XMLRecursivityTest
       Assert.assertNotNull(vals);
       Assert.assertTrue(List.class.isAssignableFrom(vals.getClass()));
       Assert.assertEquals(((List<List<ParsingBaseClass>>)vals).size(), 2);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Test
+   public void ArrayInListTest()
+   {
+      ParsingRoot root = new ParsingRoot();
+      List<String> errors = Manager.parse(root, HEADER_XML
+            + "<myArrayList>"
+               + "<array>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+               + "</array>"
+               + "<array>"
+               + "<ParsingBaseClass></ParsingBaseClass>"
+               + "<ParsingBaseClass></ParsingBaseClass>"
+            + "</array>"
+            + "</myArrayList>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object vals = root.getMyArrayList();
+      Assert.assertNotNull(vals);
+      Assert.assertTrue(List.class.isAssignableFrom(vals.getClass()));
+      Assert.assertEquals(((List<ParsingBaseClass[]>)vals).size(), 2);
+      ParsingBaseClass[] val = (ParsingBaseClass[])((List<ParsingBaseClass[]>)vals).get(0);
+      Assert.assertNotNull(val);
+      Assert.assertTrue(ParsingBaseClass[].class.isAssignableFrom(val.getClass()));
+      Assert.assertEquals(((ParsingBaseClass[])val).length, 2);
+      val = ((List<ParsingBaseClass[]>)vals).get(1);
+      Assert.assertNotNull(val);
+      Assert.assertTrue(ParsingBaseClass[].class.isAssignableFrom(val.getClass()));
+      Assert.assertEquals(((ParsingBaseClass[])val).length, 2);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Test
+   public void ListInArrayTest()
+   {
+      ParsingRoot root = new ParsingRoot();
+      List<String> errors = Manager.parse(root, HEADER_XML
+            + "<myListArray>"
+               + "<list>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+               + "</list>"
+               + "<list>"
+               + "<ParsingBaseClass></ParsingBaseClass>"
+               + "<ParsingBaseClass></ParsingBaseClass>"
+            + "</list>"
+            + "</myListArray>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object vals = root.getMyListArray();
+      Assert.assertNotNull(vals);
+      Assert.assertTrue(List[].class.isAssignableFrom(vals.getClass()));
+      Assert.assertEquals(((List[])vals).length, 2);
+      List<ParsingBaseClass> val = (List<ParsingBaseClass>)((List[])vals)[0];
+      Assert.assertNotNull(val);
+      Assert.assertTrue(List.class.isAssignableFrom(val.getClass()));
+      Assert.assertEquals(val.size(), 2);
+      val = (List<ParsingBaseClass>)((List[])vals)[1];
+      Assert.assertNotNull(val);
+      Assert.assertTrue(List.class.isAssignableFrom(val.getClass()));
+      Assert.assertEquals(val.size(), 2);
+   }
+
+   @Test
+   public void ArrayInArrayTest()
+   {
+      ParsingRoot root = new ParsingRoot();
+      List<String> errors = Manager.parse(root, HEADER_XML
+            + "<myArrayArray>"
+               + "<array>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+               + "</array>"
+               + "<array>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+                  + "<ParsingBaseClass></ParsingBaseClass>"
+            + "</array>"
+            + "</myArrayArray>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object vals = root.getMyArrayArray();
+      Assert.assertNotNull(vals);
+      Assert.assertTrue(ParsingBaseClass[][].class.isAssignableFrom(vals.getClass()));
+      Assert.assertEquals(((ParsingBaseClass[][])vals).length, 2);
+      ParsingBaseClass[] val = ((ParsingBaseClass[][])vals)[0];
+      Assert.assertNotNull(val);
+      Assert.assertTrue(ParsingBaseClass[].class.isAssignableFrom(val.getClass()));
+      Assert.assertEquals(((ParsingBaseClass[])val).length, 2);
+      val = ((ParsingBaseClass[][])vals)[1];
+      Assert.assertNotNull(val);
+      Assert.assertTrue(ParsingBaseClass[].class.isAssignableFrom(val.getClass()));
+      Assert.assertEquals(((ParsingBaseClass[])val).length, 2);
    }
 }

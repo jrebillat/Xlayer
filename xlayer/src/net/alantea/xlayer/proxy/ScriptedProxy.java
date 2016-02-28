@@ -1,12 +1,14 @@
-package net.alantea.xlayer;
+package net.alantea.xlayer.proxy;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+
+import net.alantea.xlayer.Handler;
+import net.alantea.xlayer.Manager;
 
 /**
  * The Class ScriptedProxy.
@@ -47,7 +49,6 @@ public class ScriptedProxy
       {
          if (objectMeth.equals(method))
          {
-            System.out.println(objectMeth.getName());
             return null;
          }
       }
@@ -72,10 +73,9 @@ public class ScriptedProxy
     * Do it.
     *
     * @param script the script to launch
-    * @param objects the objects
     * @return the object
     */
-   public static Object launch(Handler handler, String script, List<Object> objects)
+   public static Object launch(Handler handler, String script)
    {
       try
       {
@@ -84,7 +84,6 @@ public class ScriptedProxy
          {
             engine.put(key, variables.get(key));
          }
-         engine.put("arguments", objects.toArray());
          return engine.eval(script);
       }
       catch (ScriptException e)

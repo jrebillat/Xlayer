@@ -57,6 +57,12 @@
     </classes>
   </test>
   
+  <test name="Xml array use">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLArrayTest" />
+    </classes>
+  </test>
+  
   <test name="Xml variable">
     <classes>
        <class name="net.alantea.xlayer.junit.code.XMLVariableTest" />
@@ -78,6 +84,12 @@
   <test name="Proxy test">
     <classes>
        <class name="net.alantea.xlayer.junit.code.ProxyTest" />
+    </classes>
+  </test>
+  
+  <test name="Static method test">
+    <classes>
+       <class name="net.alantea.xlayer.junit.code.XMLStaticTest" />
     </classes>
   </test>
   

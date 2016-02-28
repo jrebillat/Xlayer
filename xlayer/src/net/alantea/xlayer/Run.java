@@ -2,8 +2,17 @@ package net.alantea.xlayer;
 
 import java.util.List;
 
+/**
+ * Run clas. Used to run a Xlayer file.
+ */
 public class Run
 {
+   
+   /**
+    * The main method.
+    *
+    * @param args the arguments
+    */
    public static void main(String[] args) {
       if (args.length == 1)
       {

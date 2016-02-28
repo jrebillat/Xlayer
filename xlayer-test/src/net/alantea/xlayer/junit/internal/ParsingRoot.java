@@ -8,6 +8,10 @@ import java.util.List;
  */
 public class ParsingRoot
 {
+   
+   /** The static value. */
+   private static int staticValue;
+   
    /** The value. */
    int value;
 
@@ -23,8 +27,23 @@ public class ParsingRoot
    /** The object list. */
    List<ParsingBaseClass> myObjectList;
    
+   /** The array. */
+   Integer[] myArray;
+   
+   /** The object array. */
+   ParsingBaseClass[] myObjectArray;
+   
    /** The list list. */
    List<List<ParsingBaseClass>> myListList;
+   
+   /** The array list. */
+   List<ParsingBaseClass[]> myArrayList;
+   
+   /** The array array. */
+   ParsingBaseClass[][] myArrayArray;
+   
+   /** The list array. */
+   List<ParsingBaseClass>[] myListArray;
    
    /**
     * Gets the value.
@@ -128,6 +147,26 @@ public class ParsingRoot
    }
 
    /**
+    * Gets the array.
+    *
+    * @return the list
+    */
+   public Integer[] getMyArray()
+   {
+      return myArray;
+   }
+
+   /**
+    * Sets the array.
+    *
+    * @param arr the new array
+    */
+   public void setMyArray(Integer[] arr)
+   {
+      this.myArray = arr;
+   }
+
+   /**
     * @return the myObjectList
     */
    public List<ParsingBaseClass> getMyObjectList()
@@ -144,6 +183,22 @@ public class ParsingRoot
    }
 
    /**
+    * @return the myObjectArray
+    */
+   public ParsingBaseClass[] getMyObjectArray()
+   {
+      return myObjectArray;
+   }
+
+   /**
+    * @param myObjectArray the myObjectArray to set
+    */
+   public void setMyObjectArray(ParsingBaseClass[] myObjectArray)
+   {
+      this.myObjectArray = myObjectArray;
+   }
+
+   /**
     * @return the myListList
     */
    public List<List<ParsingBaseClass>> getMyListList()
@@ -157,5 +212,77 @@ public class ParsingRoot
    public void setMyListList(List<List<ParsingBaseClass>> myListList)
    {
       this.myListList = myListList;
+   }
+
+   /**
+    * @return the myArrayArray
+    */
+   public ParsingBaseClass[][] getMyArrayArray()
+   {
+      return myArrayArray;
+   }
+
+   /**
+    * @param myArrayArray the myArrayArray to set
+    */
+   public void setMyArrayArray(ParsingBaseClass[][] myArrayArray)
+   {
+      this.myArrayArray = myArrayArray;
+   }
+
+   /**
+    * @return the myArrayList
+    */
+   public List<ParsingBaseClass[]> getMyArrayList()
+   {
+      return myArrayList;
+   }
+
+   /**
+    * @param myArrayList the myArrayList to set
+    */
+   public void setMyArrayList(List<ParsingBaseClass[]> myArrayList)
+   {
+      this.myArrayList = myArrayList;
+   }
+
+   /**
+    * @return the myListArray
+    */
+   public List<ParsingBaseClass>[] getMyListArray()
+   {
+      return myListArray;
+   }
+
+   /**
+    * @param myListArray the myListArray to set
+    */
+   public void setMyListArray(List<ParsingBaseClass>[] myListArray)
+   {
+      this.myListArray = myListArray;
+   }
+
+   /**
+    * @return the staticValue
+    */
+   public static int getStaticValue()
+   {
+      return staticValue;
+   }
+
+   /**
+    * @param staticValue the staticValue to set
+    */
+   public static void setStaticValue(int staticValue)
+   {
+      ParsingRoot.staticValue = staticValue;
+   }
+
+   /**
+    * @return the staticValue
+    */
+   public static void putValue(int val)
+   {
+      ParsingRoot.staticValue = val;
    }
 }

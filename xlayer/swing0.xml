@@ -6,7 +6,7 @@
 			<constant class='javax.swing.JFrame' name='EXIT_ON_CLOSE' />
 		</defaultCloseOperation>
 		<jPanel>
-			<jLabel _put='myLabel'>
+			<jLabel _put='myLabel' text='Toto' width='100' height='100'>
 				<text>Hello World too...</text>
 			</jLabel>
 		<variable name='intvar'>42</variable>
@@ -27,7 +27,7 @@
 				</addActionListener>
 			</jButton>
 		</jPanel>
-		<pack />
+		<pack/>
 		<visible>true</visible>
 	</swg:jFrame>
 </xlayer>

@@ -62,7 +62,7 @@ public class XMLObjectCreationTest
    {
       // after adding package
       List<String> errors = Manager.parse(null, HEADER_XML
-            + "<ParsingRoot _put='myparsingRoot'>"
+            + "<ParsingRoot _put='myParsingRoot'>"
             + "<testObject _class='ParsingDerivedClass' _put='myParsingObject1'></testObject>"
             + "</ParsingRoot>");
       for (String err : errors)
@@ -73,6 +73,24 @@ public class XMLObjectCreationTest
       Object object = Manager.getVariable("myParsingObject1");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingDerivedClass.class);
+   }
+   
+   @Test
+   public void withAttributesCreationTest()
+   {
+      List<String> errors = Manager.parse(null, HEADER_XML
+            + "<ParsingRoot _put='myparsingRoot' value='999'>"
+            + "</ParsingRoot>");
+      for (String err : errors)
+      {
+         System.out.println(err);
+      }
+      Assert.assertTrue(errors.isEmpty());
+      Object object = Manager.getVariable("myparsingRoot");
+      Assert.assertNotNull(object);
+      Assert.assertEquals(object.getClass(), ParsingRoot.class);
+      ParsingRoot pRoot = (ParsingRoot)object;
+      Assert.assertEquals(pRoot.getValue(), 999);
    }
    
    @Test
