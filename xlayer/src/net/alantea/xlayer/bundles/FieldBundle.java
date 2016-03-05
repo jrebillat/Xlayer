@@ -62,24 +62,24 @@ public class FieldBundle extends ObjectBundle
    {
       List<String> ret = new ArrayList<>();
 
-      // We have one constant child : it contains the value to set
-      if ((getChildren().size() == 1) && (ConstantBundle.class.isAssignableFrom(getChildren().get(0).getClass())))
+	  // nothing already set
+      if (getValue() == null)
       {
-         setValue(((ConstantBundle)getChildren().get(0)).getValue());
-      }
-      // One element or nothing given : set or create an object from the class
-      else if (getChildren().size() <= 1)
-      {
-    	  // nothing already set
-    	  if (getValue() == null)
+    	  // We have one constant child : it contains the value to set
+    	  if ((getChildren().size() == 1) && (ConstantBundle.class.isAssignableFrom(getChildren().get(0).getClass())))
     	  {
-             ret.addAll(super.endElement(handler, uri, className, qName));
+    		  setValue(((ConstantBundle)getChildren().get(0)).getValue());
     	  }
-      }
-      else
-      {
-         ret.add("Bad number of elements : " + getChildren().size() + ", should be 0 or 1 for " + localName);
-         return ret;
+    	  // One element or nothing given : set or create an object from the class
+    	  else if (getChildren().size() <= 1)
+    	  {
+    		  ret.addAll(super.endElement(handler, uri, className, qName));
+    	  }
+    	  else
+    	  {
+    		  ret.add("Bad number of elements : " + getChildren().size() + ", should be 0 or 1 for " + localName);
+    		  return ret;
+    	  }
       }
       
       // set value in field

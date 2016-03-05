@@ -265,6 +265,11 @@ public class Handler extends DefaultHandler
             else if (MethodUtils.searchMethod(fatherObject, localName, -1) != null)
             {
                currentBundle = new MethodBundle(fatherBundle);
+               if (varAttr != null)
+               {
+            	   // add variable as first parameter
+            	   new SimpleBundle(currentBundle, Manager.getVariable(varAttr));
+               }
             }
             // search for a field without setter (else it was found just before)
             else if ( Manager.searchField(fatherObject, localName) != null)
