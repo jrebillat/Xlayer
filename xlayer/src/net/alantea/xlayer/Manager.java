@@ -68,6 +68,17 @@ public final class Manager
    }
    
    /**
+    * Adds a package and its subpackages. The packages are scanned for classes used in parsing files.
+    * This will not override previously defined class names.
+    *
+    * @param pack the top package to add.
+    */
+   public static void addPackages(String pack)
+   {
+      ClassUtils.addPackages(pack);
+   }
+   
+   /**
     * Adds a package. The packages are scanned for classes used in parsing files. This will not
     * override previously defined class names.
     *
