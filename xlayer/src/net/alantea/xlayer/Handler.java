@@ -26,6 +26,7 @@ import net.alantea.xlayer.bundles.StaticBundle;
 import net.alantea.xlayer.bundles.VariableBundle;
 import net.alantea.xlayer.util.ClassUtils;
 import net.alantea.xlayer.util.MethodUtils;
+import net.alantea.xlayer.util.PrimitiveUtils;
 
 /**
  * Handler for Xlayer parsing.
@@ -231,7 +232,9 @@ public class Handler extends DefaultHandler
       }
       
       // load a variable
-      else if (varAttr != null)
+      else if ((varAttr != null) 
+    		  && ((!PrimitiveUtils.verifyNotReserved(localName)) 
+    				  || (!PrimitiveUtils.verifyNotReservedContainer(localName))))
       {
          currentBundle = new EqualsVariableBundle(fatherBundle);
       }
@@ -253,6 +256,10 @@ public class Handler extends DefaultHandler
             if ((objClass != null) && (Manager.searchField(fatherObject, localName) != null))
             {
                currentBundle = new FieldBundle(fatherBundle);
+               if (varAttr != null)
+               {
+            	   currentBundle.setValue(Manager.getVariable(varAttr));
+               }
             }
             // search for a method
             else if (MethodUtils.searchMethod(fatherObject, localName, -1) != null)
@@ -263,6 +270,10 @@ public class Handler extends DefaultHandler
             else if ( Manager.searchField(fatherObject, localName) != null)
             {
                currentBundle = new FieldBundle(fatherBundle);
+               if (varAttr != null)
+               {
+            	   currentBundle.setValue(Manager.getVariable(varAttr));
+               }
             }
             
             if (parm != null)
@@ -275,6 +286,10 @@ public class Handler extends DefaultHandler
          if (currentBundle == null)
          {
             currentBundle = new ObjectBundle(fatherBundle);
+            if (varAttr != null)
+            {
+         	   currentBundle.setValue(Manager.getVariable(varAttr));
+            }
          }
       }
       

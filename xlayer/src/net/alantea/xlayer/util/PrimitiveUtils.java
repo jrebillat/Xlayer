@@ -68,6 +68,8 @@ public final class PrimitiveUtils
             return new Short((short) 0);
          case "String":
             return new String("");
+         case "string":
+             return new String("");
          case "double":
             return new Double(0);
          default:
@@ -93,6 +95,7 @@ public final class PrimitiveUtils
          case "byte":
          case "short":
          case "String":
+         case "string":
          case "double":
             return false;
 

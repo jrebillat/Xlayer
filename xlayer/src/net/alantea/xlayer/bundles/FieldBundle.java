@@ -70,7 +70,11 @@ public class FieldBundle extends ObjectBundle
       // One element or nothing given : set or create an object from the class
       else if (getChildren().size() <= 1)
       {
-         ret.addAll(super.endElement(handler, uri, className, qName));
+    	  // nothing already set
+    	  if (getValue() == null)
+    	  {
+             ret.addAll(super.endElement(handler, uri, className, qName));
+    	  }
       }
       else
       {
@@ -91,5 +95,4 @@ public class FieldBundle extends ObjectBundle
       }
       return ret;
    }
-
 }

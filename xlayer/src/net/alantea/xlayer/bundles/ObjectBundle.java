@@ -136,16 +136,22 @@ public class ObjectBundle extends BaseBundle
             setValue(val);
          }
       }
-      else
+      else if (content != null)
       {
-         // just set contznt as value
+         // just set content as value
          setValue(content);
+      }
+      else if (this.children.size() == 1)
+      {
+         // set first child as value
+         setValue(children.get(0).getCurrentObject());
       }
       
       // add it in father if they both are objects
       if (getClass().equals(ObjectBundle.class) && (getFatherBundle().getClass().equals(ObjectBundle.class)))
       {
-         MethodUtils.addObjectInObject(((ObjectBundle)getFatherBundle()).content, content);
+         MethodUtils.addObjectInObject(((ObjectBundle)getFatherBundle()).getCurrentObject(),
+        		 (content == null) ? getValue() : content);
       }
       // Add it in father if it is a non-null root
       else if (getClass().equals(ObjectBundle.class) 
@@ -163,7 +169,7 @@ public class ObjectBundle extends BaseBundle
    @Override
    public Object getCurrentObject()
    {
-      if (PrimitiveUtils.verifyNotReservedContainer(content.getClass().getSimpleName()))
+      if ((content != null) && (PrimitiveUtils.verifyNotReservedContainer(content.getClass().getSimpleName())))
       {
          return content;
       }
