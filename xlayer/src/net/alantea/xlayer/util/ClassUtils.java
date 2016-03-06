@@ -17,6 +17,7 @@ import org.xml.sax.Attributes;
 
 import com.google.common.base.Predicate;
 
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import net.alantea.xlayer.Manager;
 
 public final class ClassUtils
@@ -29,6 +30,7 @@ public final class ClassUtils
    private static List<String> systemPackages = new ArrayList<>();
 
    private static Set<String> allPackages;
+   
 
    /**
     * Do not instantiates.
@@ -77,8 +79,7 @@ public final class ClassUtils
          return;
       }
       // use reflections to find content
-      Reflections reflections = new Reflections(pack, new SubTypesScanner(false));
-      Set<Class<? extends Object>> allClasses = reflections.getSubTypesOf(Object.class);
+      List<String> allClasses = new FastClasspathScanner(pack).scan().getNamesOfAllClasses();
 
       // Sometimes there is nothing found. This may mean there is no class in package. But usually,
       // this
@@ -87,12 +88,18 @@ public final class ClassUtils
       systemPackages.add(pack);
 
       // Store found classes.
-      for (Class<?> cl : allClasses)
+      for (String cl : allClasses)
       {
-         if (classes.get(cl.getSimpleName()) == null)
+         if (classes.get(cl) == null)
          {
-            classes.put(cl.getSimpleName(), cl);
-            addInnerClasses(cl);
+			try {
+				Class<?> theClass = ClassLoader.getSystemClassLoader().loadClass(cl);
+	            classes.put(cl.substring(cl.lastIndexOf(".")), theClass);
+	            addInnerClasses(theClass);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
          }
       }
    }
@@ -107,6 +114,7 @@ public final class ClassUtils
       Class<?>[] innerClasses = mainClass.getClasses();
       for (Class<?> innerClass : innerClasses)
       {
+    	  System.out.println("add inner class : " + innerClass.getSimpleName());
          classes.put(innerClass.getSimpleName(), innerClass);
          addInnerClasses(innerClass);
       }
