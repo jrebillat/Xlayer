@@ -16,13 +16,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.reflections.ReflectionUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -65,17 +63,6 @@ public final class Manager
       variables = new HashMap<>();
       ClassUtils.addPackage("net.alantea.xlayer");
       ClassUtils.addPackage("java.lang");
-   }
-   
-   /**
-    * Adds a package and its subpackages. The packages are scanned for classes used in parsing files.
-    * This will not override previously defined class names.
-    *
-    * @param pack the top package to add.
-    */
-   public static void addPackages(String pack)
-   {
-      ClassUtils.addPackages(pack);
    }
    
    /**
@@ -315,23 +302,33 @@ public final class Manager
     * @param fieldName the field name
     * @return true, if successful
     */
-   @SuppressWarnings("unchecked")
    public
    static Field searchField(Object target, String fieldName)
    {
-      Field ret = null;
-      Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(), ReflectionUtils.withName(fieldName));
-      if (!fields.isEmpty())
+      Field ret = searchField(target.getClass(), fieldName);
+      if ((ret != null) && (ret.getGenericType() instanceof ParameterizedType))
       {
-         ret = fields.toArray(new Field[0])[0];
-         if (ret.getGenericType() instanceof ParameterizedType)
-         {
-            // need accessor
-            ret = null;
-         }
+         // need accessor
+         ret = null;
       }
-
       return ret;
+   }
+   
+   private static Field searchField(Class<?> target, String fieldName)
+   {
+      for (Field f : target.getDeclaredFields())
+      {
+    	  String name = f.getName();
+    	  if (name.equals(fieldName))
+    	  {
+    		  return f;
+    	  }
+      }
+      if (! target.equals(Object.class))
+      {
+    	  return searchField(target.getSuperclass(), fieldName);
+      }
+      return null;
    }
 
    /**

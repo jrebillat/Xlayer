@@ -2,20 +2,11 @@ package net.alantea.xlayer.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.xml.sax.Attributes;
-
-import com.google.common.base.Predicate;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import net.alantea.xlayer.Manager;
@@ -28,8 +19,6 @@ public final class ClassUtils
 
    /** The system packages. */
    private static List<String> systemPackages = new ArrayList<>();
-
-   private static Set<String> allPackages;
    
 
    /**
@@ -46,18 +35,6 @@ public final class ClassUtils
    {
       classes = new HashMap<>();
       systemPackages = new ArrayList<>();
-   }
-   
-   /**
-    * Adds a package and its subpackages. The packages are scanned for classes used in parsing files.
-    * This will not override previously defined class names.
-    *
-    * @param pack the top package to add.
-    */
-   public static void addPackages(String pack)
-   {
-	   addPackage(pack);
-	   findAllSubPackages(pack).forEach((subpack) -> addPackage(subpack));
    }
    
    /**
@@ -81,10 +58,6 @@ public final class ClassUtils
       // use reflections to find content
       List<String> allClasses = new FastClasspathScanner(pack).scan().getNamesOfAllClasses();
 
-      // Sometimes there is nothing found. This may mean there is no class in package. But usually,
-      // this
-      // means in fact the package is in a system jar, not scanned by Reflections. Thus
-      // we will use other means (slower) to get classes when necessary.
       systemPackages.add(pack);
 
       // Store found classes.
@@ -94,7 +67,7 @@ public final class ClassUtils
          {
 			try {
 				Class<?> theClass = ClassLoader.getSystemClassLoader().loadClass(cl);
-	            classes.put(cl.substring(cl.lastIndexOf(".")), theClass);
+	            classes.put(cl.substring(cl.lastIndexOf(".")+1), theClass);
 	            addInnerClasses(theClass);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -277,69 +250,4 @@ public final class ClassUtils
          }
       }
    }
-   
-	/**
-	 * Finds all package names starting with prefix
-	 * @param prefix prefix to search for
-	 * @return Set of package names
-	 */
-	public static Set<String> findAllSubPackages(String prefix) {
-	    findAllPackages(prefix);
-
-		Set<String> ret = new TreeSet<String>();
-	    for (String name : allPackages) {
-	        if (name.startsWith(prefix)) {
-	            ret.add(name);
-	        }
-	    }
-	    return ret;
-	}
-
-	/**
-	 * Finds all package names in path
-	 * derived from http://stackoverflow.com/questions/13944633/java-reflection-get-list-of-packages
-	 * @return Set of package names
-	 */
-	public static void findAllPackages(String prefix) {
-		allPackages = new TreeSet<String>();
-	    List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
-	    classLoadersList.add(ClasspathHelper.contextClassLoader());
-	    classLoadersList.add(ClasspathHelper.staticClassLoader());
-	    Reflections reflections = new Reflections(new ConfigurationBuilder()
-	            .setScanners(new SubTypesScanner(false), new ResourcesScanner())
-	            .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
-	            .filterInputsBy(new PackagePredicate(prefix)));
-
-	    reflections.getSubTypesOf(Object.class);
-	}
-	
-	/**
-	 * The Class PackagePredicate.
-	 * Well... to explain :
-	 *   I was unable to understand the 'filterInputsBy' method of ConfigurationBuilder. It seems not to render
-	 *   the way I expected. But, fortunately, it is calling correctly the predicate. Thus, I created a predicate
-	 *   that returns always false but store interesting information in its own way (in the allPackages field).
-	 *   So : I do not rely on the return from "getSubTypesOf" method, but I got my list.
-	 *   It seems to work and is faster than other, more standard, methods to do the job.
-	 */
-	private static class PackagePredicate implements Predicate<String>
-	{
-		private String prefix;
-
-		PackagePredicate(String prefix)
-		{
-			this.prefix = prefix;
-		}
-
-		@Override
-		public boolean apply(String name) {
-			if (name.startsWith(prefix))
-			{
-			   String packName = name.substring(0, name.lastIndexOf("."));
-			   packName = packName.substring(0, packName.lastIndexOf("."));
-			   allPackages.add(packName);
-			}
-			return false;
-		}
-	}
 }

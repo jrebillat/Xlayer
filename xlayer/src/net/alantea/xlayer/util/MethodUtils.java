@@ -7,10 +7,10 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.reflections.ReflectionUtils;
 
 public final class MethodUtils
 {
@@ -168,9 +168,7 @@ public final class MethodUtils
    public static boolean addObjectInObject(Object parent, Object child)
    {
       // try using adding the object (ex: for use for adding AWT elements in a Container)
-      @SuppressWarnings("unchecked")
-      Set<Method> meths = ReflectionUtils.getAllMethods(parent.getClass(), ReflectionUtils.withName("add"),
-            ReflectionUtils.withParametersCount(1));
+	     Set<Method> meths = getMethods(parent.getClass(), "add", 1);
       if (!meths.isEmpty())
       {
          for (Method method : meths)
@@ -202,47 +200,21 @@ public final class MethodUtils
     * @param methName the method name
     * @return true, if successful
     */
-   @SuppressWarnings("unchecked")
    public
    static String searchMethod(Object target, String methName, int nbParms)
    {
       String root = methName.substring(0, 1).toUpperCase() + methName.substring(1);
       String realName = methName;
-      Set<Method> methods = null;
-      if (nbParms > -1)
-      {
-         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName),
-               ReflectionUtils.withParametersCount(nbParms));
-      }
-      else
-      {
-         methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(methName));
-      }
+      Set<Method> methods = getMethods(target.getClass(), methName, nbParms);
       if ((methods.isEmpty()))
       {
          realName = "set" + root;
-         if (nbParms > -1)
-         {
-            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
-                  ReflectionUtils.withParametersCount(nbParms));
-         }
-         else
-         {
-            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName));
-         }
+         methods = getMethods(target.getClass(), realName, nbParms);
       }
       if ((methods.isEmpty()))
       {
          realName = "add" + root;
-         if (nbParms > -1)
-         {
-            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName),
-                  ReflectionUtils.withParametersCount(nbParms));
-         }
-         else
-         {
-            methods = ReflectionUtils.getAllMethods(target.getClass(), ReflectionUtils.withName(realName));
-         }
+         methods = getMethods(target.getClass(), realName, nbParms);
       }
 
       if (methods.isEmpty())
@@ -261,7 +233,6 @@ public final class MethodUtils
    * @param objects the objects to push to method
    * @return the information
    */
-  @SuppressWarnings("unchecked")
   public
   static MethodReturnedInformation applyMethod(Object target, String methName, List<Object> objects)
   {
@@ -290,8 +261,7 @@ public final class MethodUtils
            parmClasses.add(Object.class);
         }
      }
-     Set<Method> methods = ReflectionUtils.getAllMethods(targetClass, ReflectionUtils.withName(methName),
-           ReflectionUtils.withParametersCount(objects.size()));
+     Set<Method> methods = getMethods(targetClass, methName, objects.size());
 
      Method meth = null;
      Class<?>[] pcls = null;
@@ -356,11 +326,9 @@ public final class MethodUtils
      {
         // search for one List or Array parameter
         oneArg = true;
-        methods = ReflectionUtils.getAllMethods(targetClass, ReflectionUtils.withName(methName),
-              ReflectionUtils.withParametersCount(1));
-        if (!methods.isEmpty())
+        meth = getMethod(targetClass, methName, 1);
+        if (meth != null)
         {
-           meth = methods.toArray(new Method[0])[0];
            if ((meth.getParameterCount() == 1) && (meth.getParameterTypes()[0].isArray()))
            {
               useArray = true;
@@ -490,5 +458,31 @@ private static MethodReturnedInformation launchMethod(Method meth, String methNa
         }
      }
      return clazz;
+  }
+
+private static Method getMethod(Class<?> cl, String name, int nbParms)
+  {
+
+	  Set<Method> methods = getMethods(cl, name, nbParms);
+     return (methods.isEmpty() ? null : methods.toArray(new Method[0])[0]);
+  }
+
+private static Set<Method> getMethods(Class<?> cl, String name, int nbParms)
+  {
+	  Set<Method> methods = new HashSet<>();
+	  Method[] meths = cl.getDeclaredMethods();
+	  for(Method meth : meths)
+	  {
+		  if ((meth.getName().equals(name)) 
+				  && ((nbParms == -1) || (meth.getParameterCount() == nbParms)))
+		  {
+			  methods.add(meth);
+		  }
+	  }
+	  if (!cl.equals(Object.class))
+	  {
+		  methods.addAll(getMethods(cl.getSuperclass(), name, nbParms));
+	  }
+     return methods;
   }
 }
