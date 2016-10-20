@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.xml.sax.Attributes;
 
@@ -15,23 +14,23 @@ public final class ClassUtils
 {
 
    /** The classes. */
-   private static Map<String, Class<?>> classes = new HashMap<>();
+   private Map<String, Class<?>> classes = new HashMap<>();
 
    /** The system packages. */
-   private static List<String> systemPackages = new ArrayList<>();
+   private List<String> systemPackages = new ArrayList<>();
    
 
    /**
     * Do not instantiates.
     */
-   private ClassUtils()
+   public ClassUtils()
    {
    }
    
    /**
     * Clear all packages.
     */
-   public static void clear()
+   public void clear()
    {
       classes = new HashMap<>();
       systemPackages = new ArrayList<>();
@@ -43,7 +42,7 @@ public final class ClassUtils
     *
     * @param pack the package to add.
     */
-   public static void addPackage(String pack)
+   public void addPackage(String pack)
    {
       if ((pack == null) || (pack.trim().isEmpty()))
       {
@@ -82,7 +81,7 @@ public final class ClassUtils
     *
     * @param mainClass the main class
     */
-   private static void addInnerClasses(Class<?> mainClass)
+   private void addInnerClasses(Class<?> mainClass)
    {
       Class<?>[] innerClasses = mainClass.getClasses();
       for (Class<?> innerClass : innerClasses)
@@ -99,7 +98,7 @@ public final class ClassUtils
     * @param className the class name to load
     * @throws ClassNotFoundException
     */
-   public static void addClass(String className) throws ClassNotFoundException
+   public void addClass(String className) throws ClassNotFoundException
    {
       Class<?> cl = Class.forName(className);
       classes.put(cl.getSimpleName(), cl);
@@ -112,7 +111,7 @@ public final class ClassUtils
     * @param clName the class name
     * @return the class
     */
-   static Class<?> getKnownClass(String clName)
+  private Class<?> getKnownClass(String clName)
    {
       Class<?> cl = classes.get(clName);
       if (cl == null)
@@ -142,7 +141,7 @@ public final class ClassUtils
     * @param derivedName the derived name
     * @return true, if successful
     */
-   static boolean checkCompatibility(String namespace, String baseName, String derivedName)
+   boolean checkCompatibility(String namespace, String baseName, String derivedName)
    {
       Class<?> base = searchClass(namespace, baseName);
       Class<?> derived = searchClass("", derivedName);
@@ -155,7 +154,7 @@ public final class ClassUtils
     * @param name the class name (maybe lower case)
     * @return the class
     */
-   public static Class<?> searchClass(String namespace, String name)
+   public Class<?> searchClass(String namespace, String name)
    {
       String clName = name;
 
@@ -217,7 +216,7 @@ public final class ClassUtils
     * @param attrs the attributes to set
     * @return the new class instance
     */
-   public static Object getInstance(String namespace, String name, Attributes attrs)
+   public Object getInstance(Manager manager, String namespace, String name, Attributes attrs)
    {
       Class<?> cl = searchClass(namespace, name);
       //
@@ -239,7 +238,7 @@ public final class ClassUtils
             {
                String key = attrs.getQName(i);
                String value = attrs.getValue(i);
-               Manager.setAttribute(object, key, value);
+               manager.setAttribute(object, key, value);
             }
 
             return object;

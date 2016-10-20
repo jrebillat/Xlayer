@@ -6,7 +6,6 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
 
 /**
  * Bundle to handle variable setting in the file.
@@ -50,7 +49,7 @@ public class EqualsVariableBundle extends BaseBundle
       // set value
       if (varName != null)
       {
-         setValue(Manager.getVariable(varName));
+         setValue(handler.getManager().getVariable(varName));
       }
       else
       {

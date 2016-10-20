@@ -38,8 +38,9 @@ public class HelloWorldSwing2 {
    
 
     public static void main(String[] args) {
+       Manager manager = new Manager();
 //       Manager.addPackage("javax.swing");
-       Manager.parseFile(null, "swing1.xml");
+       manager.parseFile(null, "swing1.xml");
     }
 //    private static void createComponentMap(JFrame frame) {
 //       componentMap = new HashMap<String,Component>();

@@ -21,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -35,19 +36,21 @@ import net.alantea.xlayer.util.Variable;
  */
 public final class Manager
 {
-   private static Map<String, Object> variables = new HashMap<>();
+   private Map<String, Object> variables = new HashMap<>();
 
+   ClassUtils classUtils;
    static
    {
-      ClassUtils.addPackage("net.alantea.xlayer");
-      ClassUtils.addPackage("java.lang");
    }
 
    /**
     * Instantiates a new manager. No to be used.
     */
-   private Manager()
+   public Manager()
    {
+      classUtils = new ClassUtils();
+      classUtils.addPackage("net.alantea.xlayer");
+      classUtils.addPackage("java.lang");
    }
 
    // ========================================================================================================
@@ -55,14 +58,29 @@ public final class Manager
    // ========================================================================================================
 
    /**
+    * Gets the class utils.
+    *
+    * @return the class utils
+    */
+   public ClassUtils getClassUtils()
+   {
+      return classUtils;
+   }
+   
+   /**
     * Clear all information.
     */
-   public static void clearAll()
+   public void clearAll()
    {
-      ClassUtils.clear();
+      classUtils.clear();
       variables = new HashMap<>();
-      ClassUtils.addPackage("net.alantea.xlayer");
-      ClassUtils.addPackage("java.lang");
+      classUtils.addPackage("net.alantea.xlayer");
+      classUtils.addPackage("java.lang");
+   }
+   
+   public Object getInstance(String namespace, String name, Attributes attrs)
+   {
+      return classUtils.getInstance(this, namespace, name, attrs);
    }
    
    /**
@@ -71,9 +89,9 @@ public final class Manager
     *
     * @param pack the package to add.
     */
-   public static void addPackage(String pack)
+   public void addPackage(String pack)
    {
-      ClassUtils.addPackage(pack);
+      classUtils.addPackage(pack);
    }
    
    /**
@@ -82,9 +100,9 @@ public final class Manager
     * @param className the class name to load
     * @throws ClassNotFoundException
     */
-   public static void addClass(String className) throws ClassNotFoundException
+   public void addClass(String className) throws ClassNotFoundException
    {
-      ClassUtils.addClass(className);
+      classUtils.addClass(className);
    }
    
    /**
@@ -94,7 +112,7 @@ public final class Manager
     * @param text the text containing the XML
     * @return true, if successful
     */
-   public static List<String> parse(Object root, String text)
+   public List<String> parse(Object root, String text)
    {
       if (text == null)
       {
@@ -112,9 +130,9 @@ public final class Manager
     * @param path the file path containing the XML
     * @return true, if successful
     */
-   public static List<String> parseFile(String path)
+   public List<String> parseFile(String path)
    {
-      return parseHandledFile(new Handler(null), path);
+      return parseHandledFile(new Handler(this, null), path);
    }
 
    /**
@@ -124,9 +142,9 @@ public final class Manager
     * @param path the file path containing the XML
     * @return true, if successful
     */
-   public static List<String> parseFile(Object root, String path)
+   public List<String> parseFile(Object root, String path)
    {
-      return parseHandledFile(new Handler(root), path);
+      return parseHandledFile(new Handler(this, root), path);
    }
 
    /**
@@ -136,9 +154,9 @@ public final class Manager
     * @param path the resource path containing the XML
     * @return true, if successful
     */
-   public static List<String> parseResource(String path)
+   public List<String> parseResource(String path)
    {
-      return parseFile(new Handler(null), path);
+      return parseFile(new Handler(this, null), path);
    }
 
    /**
@@ -148,9 +166,9 @@ public final class Manager
     * @param path the resource path containing the XML
     * @return true, if successful
     */
-   public static List<String> parseResource(Object root, String path)
+   public List<String> parseResource(Object root, String path)
    {
-      return parseHandledResource(new Handler(root), path);
+      return parseHandledResource(new Handler(this, root), path);
    }
 
    /**
@@ -160,7 +178,7 @@ public final class Manager
     * @param path the resource path containing the XML
     * @return true, if successful
     */
-   public static List<String> parseHandledResource(Handler handler, String path)
+   public List<String> parseHandledResource(Handler handler, String path)
    {
       if (path == null)
       {
@@ -186,7 +204,7 @@ public final class Manager
     * @param path the file path containing the XML
     * @return true, if successful
     */
-   public static List<String> parseHandledFile(Handler handler, String path)
+   public List<String> parseHandledFile(Handler handler, String path)
    {
       if (path == null)
       {
@@ -213,9 +231,9 @@ public final class Manager
     * @param reader the reader to get the XML from
     * @return true, if successful
     */
-   public static List<String> parse(Object root, Reader reader)
+   public List<String> parse(Object root, Reader reader)
    {
-      return parse(new Handler(root), reader);
+      return parse(new Handler(this, root), reader);
    }
 
    /**
@@ -225,7 +243,7 @@ public final class Manager
     * @param reader the reader to get the XML from
     * @return true, if successful
     */
-   static List<String> parse(Handler handler, Reader reader)
+   private List<String> parse(Handler handler, Reader reader)
    {
       if (reader == null)
       {
@@ -260,7 +278,7 @@ public final class Manager
     * @param name the name
     * @param content the content
     */
-   public static void setVariable(String name, Object content)
+   public void setVariable(String name, Object content)
    {
       variables.put(name, content);
    }
@@ -271,7 +289,7 @@ public final class Manager
     * @param name the name
     * @return the variable
     */
-   public static Object getVariable(String name)
+   public Object getVariable(String name)
    {
       Object object = variables.get(name);
       if ((object != null) && (object instanceof Variable))
@@ -286,7 +304,7 @@ public final class Manager
     *
     * @return the variable map
     */
-   public static Map<String, Object> getVariables()
+   public Map<String, Object> getVariables()
    {
       return Collections.unmodifiableMap(variables);
    }
@@ -302,8 +320,7 @@ public final class Manager
     * @param fieldName the field name
     * @return true, if successful
     */
-   public
-   static Field searchField(Object target, String fieldName)
+   public Field searchField(Object target, String fieldName)
    {
       Field ret = searchField(target.getClass(), fieldName);
       if ((ret != null) && (ret.getGenericType() instanceof ParameterizedType))
@@ -314,7 +331,7 @@ public final class Manager
       return ret;
    }
    
-   private static Field searchField(Class<?> target, String fieldName)
+   private Field searchField(Class<?> target, String fieldName)
    {
       for (Field f : target.getDeclaredFields())
       {
@@ -338,7 +355,7 @@ public final class Manager
     * @param key the key for the attribute
     * @param value the value to set
     */
-   public static void setAttribute(Object target, String key, Object value)
+   public void setAttribute(Object target, String key, Object value)
    {
       setOrAddAttribute(target.getClass(), target, key, value);
    }
@@ -352,7 +369,7 @@ public final class Manager
     * @param value the value
     * @return true, if successful
     */
-   public static boolean setOrAddAttribute(Class<?> cl, Object target, String key, Object value)
+   public boolean setOrAddAttribute(Class<?> cl, Object target, String key, Object value)
    {
       // Search for a simple method
       if (MethodUtils.searchAndRunMethod(cl, target, null, key, value))
@@ -418,7 +435,7 @@ public final class Manager
     * @param name the variable name
     * @param value the variable value
     */
-   public static void addVariable(String name, Object value)
+   public void addVariable(String name, Object value)
    {
       variables.put(name, value);
    }
@@ -428,7 +445,7 @@ public final class Manager
     *
     * @param variable the variable
     */
-   static void addVariable(Variable variable)
+   void addVariable(Variable variable)
    {
       variables.put(variable.getName(), variable.getContent());
    }
@@ -444,7 +461,7 @@ public final class Manager
     * @param oldObj the old object
     * @param newObj the new object
     */
-   static void replaceVariable(Object oldObj, Object newObj)
+   void replaceVariable(Object oldObj, Object newObj)
    {
       for (String key : variables.keySet())
       {

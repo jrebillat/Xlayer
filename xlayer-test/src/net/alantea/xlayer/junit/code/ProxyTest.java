@@ -13,18 +13,21 @@ public class ProxyTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
 
    @Test
    public void simpleVariableTest()
    {
       TestMain test = new TestMain();
-      List<String> errors = Manager.parse(test, HEADER_XML
+      List<String> errors = manager.parse(test, HEADER_XML
             + "<xlayer>"
             + "<?package path='net.alantea.xlayer.junit.internal' type='resource'?>"
             + " <setTestItf>"

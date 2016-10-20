@@ -13,17 +13,20 @@ public class XMLStaticTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
+      manager = new Manager();
+      manager.clearAll();
    }
    
    @Test
    public void callStaticTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<xlayer>"
             + "<static class='ParsingRoot' method='putValue'>32</static>"
             + "</xlayer>");
@@ -39,7 +42,7 @@ public class XMLStaticTest
    @Test
    public void callBadClassStaticTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<xlayer>"
             + "<static class='UnknownClass' method='putValue'>32</static>"
             + "</xlayer>");
@@ -53,7 +56,7 @@ public class XMLStaticTest
    @Test
    public void callBadMethodStaticTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<xlayer>"
             + "<static class='ParsingRoot' method='unknownMethod'>32</static>"
             + "</xlayer>");
@@ -67,7 +70,7 @@ public class XMLStaticTest
    @Test
    public void callBadValueTypeStaticTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<xlayer>"
             + "<static class='ParsingRoot' method='putValue'>Test me</static>"
             + "</xlayer>");

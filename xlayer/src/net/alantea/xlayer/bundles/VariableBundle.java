@@ -50,7 +50,7 @@ public class VariableBundle extends BaseBundle
       // Store variable
       if (name != null)
       {
-         Manager.setVariable(name, mergeChildrenReturnedValues());
+         handler.getManager().setVariable(name, mergeChildrenReturnedValues());
       }
       else
       {

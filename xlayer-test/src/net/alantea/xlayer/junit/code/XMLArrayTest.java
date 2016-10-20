@@ -14,17 +14,21 @@ public class XMLArrayTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
+   
    @Test
    public void SimpleValuesArrayTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArray>"
                   + "<integer>1</integer>"
                   + "<integer>2</integer>"
@@ -50,7 +54,7 @@ public class XMLArrayTest
    public void SimpleValuesArray2Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArray><array>"
                   + "<integer>1</integer>"
                   + "<integer>2</integer>"
@@ -76,7 +80,7 @@ public class XMLArrayTest
    public void OneValueArrayTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArray>"
                   + "<integer>1</integer>"
             + "</myArray>");
@@ -99,7 +103,7 @@ public class XMLArrayTest
    public void OneValueArray2Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArray><array>"
                   + "<integer>1</integer>"
             + "</array></myArray>");
@@ -122,7 +126,7 @@ public class XMLArrayTest
    public void ObjectValuesArrayTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myObjectArray>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -143,7 +147,7 @@ public class XMLArrayTest
    public void ArrayValuesArrayTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArrayArray>"
                + "<array>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -169,7 +173,7 @@ public class XMLArrayTest
    public void EmptyValuesArrayTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArray>"
                + "<list>"
                + "</list>"

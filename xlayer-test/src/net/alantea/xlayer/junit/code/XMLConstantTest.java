@@ -17,18 +17,21 @@ public class XMLConstantTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
+      manager = new Manager();
+      manager.clearAll();
    }
    
    @Test
    public void loadConstant1Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value>"
             + "<constant class='javax.swing.JFrame' name='EXIT_ON_CLOSE' />"
             + "</value>");
@@ -45,7 +48,7 @@ public class XMLConstantTest
    public void loadConstant2Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value>"
             + "<constant class='ParsingBaseClass' name='TEST_VALUE' />"
             + "</value>");
@@ -62,7 +65,7 @@ public class XMLConstantTest
    public void loadConstant3Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value>"
             + "<constant class='ParsingBaseClass.InnerClass' name='TEST_VALUE_2' />"
             + "</value>");
@@ -79,7 +82,7 @@ public class XMLConstantTest
    public void loadConstant4Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<stateValue>"
             + "<constant class='net.alantea.xlayer.junit.internal.ParsingBaseClass.State' name='OFF' />"
             + "</stateValue>");
@@ -96,7 +99,7 @@ public class XMLConstantTest
    public void loadInvalidConstant1Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<stateValue>"
             + "<constant class='Completely.unknown.class' name='OFF' />"
             + "</stateValue>");
@@ -111,7 +114,7 @@ public class XMLConstantTest
    public void loadInvalidConstant2Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<stateValue>"
             + "<constant class='net.alantea.xlayer.junit.internal.ParsingBaseClass.State' name='UNKNOWN_CONSTANT' />"
             + "</stateValue>");

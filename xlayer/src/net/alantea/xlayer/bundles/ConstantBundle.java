@@ -6,9 +6,7 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.util.ClassUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Bundle to handle constants or Enum values access in classes.
  */
@@ -53,7 +51,7 @@ public class ConstantBundle extends BaseBundle
          else
          {
             // Search for class
-            Class<?> cl = ClassUtils.searchClass("", cstClass);
+            Class<?> cl = handler.getClassUtils().searchClass("", cstClass);
             if (cl == null)
             {
                setValid(false);

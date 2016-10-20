@@ -8,7 +8,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
 
 /**
  * The Class ScriptedProxy.
@@ -24,15 +23,20 @@ public class ScriptedProxy
 
    /** The script. */
    private String script;
+   
+   /** The Handler. */
+   private Handler handler;
 
    /**
     * Instantiates a new scripted proxy.
+    * @param handler 
     *
     * @param script the script
     */
-   public ScriptedProxy(String script)
+   public ScriptedProxy(Handler handler, String script)
    {
       this.script = script;
+      this.handler = handler;
    }
 
    /**
@@ -54,7 +58,7 @@ public class ScriptedProxy
       }
       try
       {
-         Map<String, Object> variables = Manager.getVariables();
+         Map<String, Object> variables = handler.getManager().getVariables();
          for (String key : variables.keySet())
          {
             engine.put(key, variables.get(key));
@@ -79,7 +83,7 @@ public class ScriptedProxy
    {
       try
       {
-         Map<String, Object> variables = Manager.getVariables();
+         Map<String, Object> variables = handler.getManager().getVariables();
          for (String key : variables.keySet())
          {
             engine.put(key, variables.get(key));

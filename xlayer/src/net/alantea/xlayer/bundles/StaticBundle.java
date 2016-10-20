@@ -6,7 +6,6 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.util.ClassUtils;
 import net.alantea.xlayer.util.MethodReturnedInformation;
 import net.alantea.xlayer.util.MethodUtils;
 
@@ -68,7 +67,7 @@ public class StaticBundle extends BaseBundle
       List<String> errors = new ArrayList<String>();
 
          // Search for class
-         Class<?> cl = ClassUtils.searchClass("", className);
+         Class<?> cl = handler.getClassUtils().searchClass("", className);
          if (cl == null)
          {
             setValid(false);

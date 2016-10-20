@@ -6,8 +6,6 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
-import net.alantea.xlayer.util.ClassUtils;
 import net.alantea.xlayer.util.MethodUtils;
 import net.alantea.xlayer.util.PrimitiveUtils;
 
@@ -48,8 +46,8 @@ public class ObjectBundle extends BaseBundle
       if (classAttr != null)
       {
          // search for nase and derived classes
-         Class<?> baseClass = ClassUtils.searchClass(namespace, localName);
-         Class<?> derivedClass = ClassUtils.searchClass(namespace, classAttr);
+         Class<?> baseClass = handler.getClassUtils().searchClass(namespace, localName);
+         Class<?> derivedClass = handler.getClassUtils().searchClass(namespace, classAttr);
          if (baseClass == null)
          {
             this.setValid(false);
@@ -77,7 +75,7 @@ public class ObjectBundle extends BaseBundle
       // If not reserved, we can already instantiate the content
       if ((PrimitiveUtils.verifyNotReserved(className)) && (PrimitiveUtils.verifyNotReservedContainer(className)))
       {
-         content = ClassUtils.getInstance(namespace, className, atts);
+         content = handler.getManager().getInstance(namespace, className, atts);
       }
       else
       {
@@ -96,7 +94,7 @@ public class ObjectBundle extends BaseBundle
          {
             String key = atts.getLocalName(i);
             String val = atts.getValue(i);
-            Manager.setOrAddAttribute(content.getClass(), content, key, val);
+            handler.getManager().setOrAddAttribute(content.getClass(), content, key, val);
          }
       }
       return errors;

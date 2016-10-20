@@ -15,33 +15,36 @@ public class PackageRegistrationTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
+      manager = new Manager();
+      manager.clearAll();
    }
    
    @Test
    public void addPackageTest()
    {
       // before add package
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<JFrame _put='packRoot'>"
             + "</JFrame>");
       Assert.assertFalse(errors.isEmpty());
-      Object object = Manager.getVariable("packRoot");
+      Object object = manager.getVariable("packRoot");
       Assert.assertNull(object);
       
       // add package
-      Manager.addPackage("javax.swing");
+      manager.addPackage("javax.swing");
       
       // after adding package
-      errors = Manager.parse(null, HEADER_XML
+      errors = manager.parse(null, HEADER_XML
             + "<JFrame _put='myJFrame'>"
             + "</JFrame>");
       Assert.assertTrue(errors.isEmpty());
-      object = Manager.getVariable("myJFrame");
+      object = manager.getVariable("myJFrame");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), JFrame.class);
    }
@@ -52,7 +55,7 @@ public class PackageRegistrationTest
       // add bad class
       try
       {
-         Manager.addClass("java.bad.package.className");
+         manager.addClass("java.bad.package.className");
          Assert.fail("java.bad.package.className found. Why ?");
       }
       catch (ClassNotFoundException e)
@@ -61,17 +64,17 @@ public class PackageRegistrationTest
       }
       
       // before add class
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<Container _put='myComponent'>"
             + "</Container>");
       Assert.assertFalse(errors.isEmpty());
-      Object object = Manager.getVariable("myComponent");
+      Object object = manager.getVariable("myComponent");
       Assert.assertNull(object);
       
       // add class
       try
       {
-         Manager.addClass("java.awt.Container");
+         manager.addClass("java.awt.Container");
       }
       catch (ClassNotFoundException e)
       {
@@ -79,11 +82,11 @@ public class PackageRegistrationTest
       }
       
       // after adding class
-      errors = Manager.parse(null, HEADER_XML
+      errors = manager.parse(null, HEADER_XML
             + "<Container _put='myComponent'>"
             + "</Container>");
       Assert.assertTrue(errors.isEmpty());
-      object = Manager.getVariable("myComponent");
+      object = manager.getVariable("myComponent");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), Container.class);
    }

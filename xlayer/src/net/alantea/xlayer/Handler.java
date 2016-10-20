@@ -33,6 +33,7 @@ import net.alantea.xlayer.util.PrimitiveUtils;
  */
 public class Handler extends DefaultHandler
 {
+   private Manager manager;
    
    /** The current object. */
    private BaseBundle currentBundle = null;
@@ -53,9 +54,10 @@ public class Handler extends DefaultHandler
     *
     * @param root the root
     */
-   public Handler(Object root)
+   public Handler(Manager manager, Object root)
    {
       super();
+      this.manager = manager;
       BaseBundle oldBundle = currentBundle;
       currentBundle = new RootBundle(root);
       
@@ -70,6 +72,21 @@ public class Handler extends DefaultHandler
          errors = new ArrayList<>();
       }
       concatChars = "";
+   }
+   
+   /**
+    * Gets the manager.
+    *
+    * @return the manager
+    */
+   public Manager getManager()
+   {
+      return manager;
+   }
+   
+   public ClassUtils getClassUtils()
+   {
+      return manager.getClassUtils();
    }
 
    /**
@@ -91,18 +108,18 @@ public class Handler extends DefaultHandler
       // Add package.
       if ("package".equals(target))
       {
-         Manager.addPackage(data);
+         manager.addPackage(data);
       }     
       // Include file.
       if ("include".equals(target))
       {
          if (data.startsWith("file="))
          {
-            addErrors(Manager.parseHandledFile(this,stripChain(data.substring(5))));
+            addErrors(manager.parseHandledFile(this,stripChain(data.substring(5))));
          }
          else if (data.startsWith("resource="))
          {
-            addErrors(Manager.parseHandledResource(this,stripChain(data.substring(9))));
+            addErrors(manager.parseHandledResource(this,stripChain(data.substring(9))));
          }
       }
    }
@@ -172,7 +189,7 @@ public class Handler extends DefaultHandler
          Attributes atts)
    {
       // store namespace if needed
-      Manager.addPackage(namespaceURI);
+      manager.addPackage(namespaceURI);
 
       // Clear characters
       concatChars = "";
@@ -249,16 +266,16 @@ public class Handler extends DefaultHandler
             String objClass = atts.getValue("_class");
             if (objClass != null)
             {
-               parm = ClassUtils.getInstance(namespaceURI, objClass, new AttributesImpl());
+               parm = manager.getInstance(namespaceURI, objClass, new AttributesImpl());
             }
 
             // Search for fields to put an object in
-            if ((objClass != null) && (Manager.searchField(fatherObject, localName) != null))
+            if ((objClass != null) && (manager.searchField(fatherObject, localName) != null))
             {
                currentBundle = new FieldBundle(fatherBundle);
                if (varAttr != null)
                {
-            	   currentBundle.setValue(Manager.getVariable(varAttr));
+            	   currentBundle.setValue(manager.getVariable(varAttr));
                }
             }
             // search for a method
@@ -268,16 +285,16 @@ public class Handler extends DefaultHandler
                if (varAttr != null)
                {
             	   // add variable as first parameter
-            	   new SimpleBundle(currentBundle, Manager.getVariable(varAttr));
+            	   new SimpleBundle(currentBundle, manager.getVariable(varAttr));
                }
             }
             // search for a field without setter (else it was found just before)
-            else if ( Manager.searchField(fatherObject, localName) != null)
+            else if ( manager.searchField(fatherObject, localName) != null)
             {
                currentBundle = new FieldBundle(fatherBundle);
                if (varAttr != null)
                {
-            	   currentBundle.setValue(Manager.getVariable(varAttr));
+            	   currentBundle.setValue(manager.getVariable(varAttr));
                }
             }
             
@@ -293,7 +310,7 @@ public class Handler extends DefaultHandler
             currentBundle = new ObjectBundle(fatherBundle);
             if (varAttr != null)
             {
-         	   currentBundle.setValue(Manager.getVariable(varAttr));
+         	   currentBundle.setValue(manager.getVariable(varAttr));
             }
          }
       }

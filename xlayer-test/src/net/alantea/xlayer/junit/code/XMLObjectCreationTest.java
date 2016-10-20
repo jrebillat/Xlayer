@@ -16,17 +16,20 @@ public class XMLObjectCreationTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
+      manager = new Manager();
+      manager.clearAll();
    }
    
    @Test
    public void defaultPackageCreationTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myparsingRoot'>"
             + "</ParsingRoot>");
       for (String err : errors)
@@ -34,7 +37,7 @@ public class XMLObjectCreationTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myparsingRoot");
+      Object object = manager.getVariable("myparsingRoot");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
    }
@@ -43,7 +46,7 @@ public class XMLObjectCreationTest
    public void registeredPackageCreationTest()
    {
       // after adding package
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<?package javax.swing?>"
             + "<JFrame _put='myJFrame'>"
             + "</JFrame>");
@@ -52,7 +55,7 @@ public class XMLObjectCreationTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myJFrame");
+      Object object = manager.getVariable("myJFrame");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), JFrame.class);
    }
@@ -61,7 +64,7 @@ public class XMLObjectCreationTest
    public void withClassCreationTest()
    {
       // after adding package
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myParsingRoot'>"
             + "<testObject _class='ParsingDerivedClass' _put='myParsingObject1'></testObject>"
             + "</ParsingRoot>");
@@ -70,7 +73,7 @@ public class XMLObjectCreationTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myParsingObject1");
+      Object object = manager.getVariable("myParsingObject1");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingDerivedClass.class);
    }
@@ -78,7 +81,7 @@ public class XMLObjectCreationTest
    @Test
    public void withAttributesCreationTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myparsingRoot' value='999'>"
             + "</ParsingRoot>");
       for (String err : errors)
@@ -86,7 +89,7 @@ public class XMLObjectCreationTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myparsingRoot");
+      Object object = manager.getVariable("myparsingRoot");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       ParsingRoot pRoot = (ParsingRoot)object;
@@ -97,7 +100,7 @@ public class XMLObjectCreationTest
    public void withNonExistingClassCreationTest()
    {
       // after adding package
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myparsingRoot'>"
             + "<testObject _class='NonExistingClass' _put='myParsingObject2'></testObject>"
             + "</ParsingRoot>");
@@ -112,7 +115,7 @@ public class XMLObjectCreationTest
    public void withInvalidClassCreationTest()
    {
       // after adding package
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myparsingRoot'>"
             + "<testObject _class='ParsingRoot' _put='myParsingObject3'></testObject>"
             + "</ParsingRoot>");

@@ -7,7 +7,6 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
 
 /**
  * Bundle to manage fields. It inherits from ObjectBundle.
@@ -41,7 +40,7 @@ public class FieldBundle extends ObjectBundle
       List<String> ret = new ArrayList<>();
       
       // search for field
-      field = Manager.searchField(getFatherBundle().getCurrentObject(), localName);
+      field = handler.getManager().searchField(getFatherBundle().getCurrentObject(), localName);
       if (field == null)
       {
          ret.add("Unknown field : " + localName);
@@ -87,7 +86,7 @@ public class FieldBundle extends ObjectBundle
       try
       {
          field.setAccessible(true);
-         Manager.setOrAddAttribute(getFatherBundle().getCurrentObject().getClass(), getFatherBundle().getCurrentObject(), field.getName(), val);
+         handler.getManager().setOrAddAttribute(getFatherBundle().getCurrentObject().getClass(), getFatherBundle().getCurrentObject(), field.getName(), val);
       }
       catch (IllegalArgumentException e)
       {

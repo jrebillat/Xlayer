@@ -6,7 +6,6 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
 
 /**
  * The base class for Bundle to store information for a parsing level.
@@ -213,7 +212,7 @@ public abstract class BaseBundle
       List<String> ret = endElement(handler, uri, localName, qName);
       if (varName != null)
       {
-         Manager.setVariable(varName, getValue());
+         handler.getManager().setVariable(varName, getValue());
       }
       return ret;
    }

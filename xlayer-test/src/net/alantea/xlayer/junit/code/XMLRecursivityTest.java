@@ -15,24 +15,27 @@ public class XMLRecursivityTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
 
    @Test
    public void objectInObjectTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><testObject _class='ParsingDerivedClass'></testObject></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       Object subObject = ((ParsingRoot)object).getTestObject();
@@ -43,14 +46,14 @@ public class XMLRecursivityTest
    @Test
    public void simpleInObjectTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><value>24</value></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -60,14 +63,14 @@ public class XMLRecursivityTest
    @Test
    public void methodInObjectTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><changeValue>33</changeValue></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -78,7 +81,7 @@ public class XMLRecursivityTest
    @Test
    public void listInObjectTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'>"
             + "<myList>"
                   + "<integer>1</integer>"
@@ -92,7 +95,7 @@ public class XMLRecursivityTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       Object ints = ((ParsingRoot)object).getMyList();
@@ -107,14 +110,14 @@ public class XMLRecursivityTest
    @Test
    public void scriptInObjectTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><value><script>var a; a = 99;</script></value></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -124,14 +127,14 @@ public class XMLRecursivityTest
    @Test
    public void simpleInMethodTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><changeValue><integer>33</integer></changeValue></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -141,14 +144,14 @@ public class XMLRecursivityTest
    @Test
    public void methodInMethodTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><changeValue><loadValue/></changeValue></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -158,14 +161,14 @@ public class XMLRecursivityTest
    @Test
    public void objectInMethodTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><changeTestObject><ParsingBaseClass/></changeTestObject></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       Object subObject = ((ParsingRoot)object).getTestObject();
@@ -176,7 +179,7 @@ public class XMLRecursivityTest
    @Test
    public void listInMethodTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><value><sum>"
             + "<integer>1</integer>"
             + "<integer>2</integer>"
@@ -188,7 +191,7 @@ public class XMLRecursivityTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -198,14 +201,14 @@ public class XMLRecursivityTest
    @Test
    public void scriptInMethodTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><changeValue><script>var a; a = 99;</script></changeValue></ParsingRoot>");
       for (String err : errors)
       {
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -215,7 +218,7 @@ public class XMLRecursivityTest
    @Test
    public void simpleInListTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><value><sum><list>"
             + "<integer>1</integer>"
             + "<integer>2</integer>"
@@ -227,7 +230,7 @@ public class XMLRecursivityTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -239,7 +242,7 @@ public class XMLRecursivityTest
    public void ObjectInListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myObjectList>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -259,7 +262,7 @@ public class XMLRecursivityTest
    @Test
    public void methodInListTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><value><sum><list>"
             + "<integer>1</integer>"
             + "<loadValue/>"
@@ -269,7 +272,7 @@ public class XMLRecursivityTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -279,7 +282,7 @@ public class XMLRecursivityTest
    @Test
    public void scriptInListTest()
    {
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'><value><sum><list>"
             + "<integer>1</integer>"
             + "<script>var a; a = 99;</script>"
@@ -289,7 +292,7 @@ public class XMLRecursivityTest
          System.out.println(err);
       }
       Assert.assertTrue(errors.isEmpty());
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
       int val = ((ParsingRoot)object).getValue();
@@ -301,7 +304,7 @@ public class XMLRecursivityTest
    public void ListInListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myListList>"
                + "<list>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -328,7 +331,7 @@ public class XMLRecursivityTest
    public void ArrayInListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArrayList>"
                + "<array>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -363,7 +366,7 @@ public class XMLRecursivityTest
    public void ListInArrayTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myListArray>"
                + "<list>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -397,7 +400,7 @@ public class XMLRecursivityTest
    public void ArrayInArrayTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myArrayArray>"
                + "<array>"
                   + "<ParsingBaseClass></ParsingBaseClass>"

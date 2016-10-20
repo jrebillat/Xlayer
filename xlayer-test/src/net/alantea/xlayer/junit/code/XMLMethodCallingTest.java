@@ -14,18 +14,21 @@ public class XMLMethodCallingTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
 
    @Test
    public void NoArgsCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><loadValue/></value>");
       for (String err : errors)
       {
@@ -40,7 +43,7 @@ public class XMLMethodCallingTest
    public void SimpleCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<changeValue>33</changeValue>");
       for (String err : errors)
       {
@@ -55,7 +58,7 @@ public class XMLMethodCallingTest
    public void ObjectCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<changeTestObject><ParsingBaseClass/></changeTestObject>");
       for (String err : errors)
       {
@@ -71,7 +74,7 @@ public class XMLMethodCallingTest
    public void TwoParamsCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<changeBoth><integer>22</integer><ParsingBaseClass/></changeBoth>");
       for (String err : errors)
       {
@@ -89,7 +92,7 @@ public class XMLMethodCallingTest
    public void AutoListCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><sum>"
             + "<integer>1</integer>"
             + "<integer>2</integer>"
@@ -109,7 +112,7 @@ public class XMLMethodCallingTest
    public void DefinedListCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><sum>"
                   + "<list>"
             + "<integer>1</integer>"
@@ -131,7 +134,7 @@ public class XMLMethodCallingTest
    public void ObjectAndListCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><setSum>"
             + "<ParsingBaseClass/>"
             + "<list>"
@@ -156,7 +159,7 @@ public class XMLMethodCallingTest
    public void BadCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<badMethodName>33</badMethodName>");
       for (String err : errors)
       {
@@ -169,7 +172,7 @@ public class XMLMethodCallingTest
    public void BadparametersCallTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><setSum>"
             + "<list>"
             + "<integer>2</integer>"

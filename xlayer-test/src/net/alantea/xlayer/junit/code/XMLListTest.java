@@ -14,19 +14,22 @@ public class XMLListTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
 
    @SuppressWarnings("unchecked")
    @Test
    public void SimpleValuesListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myList>"
                   + "<integer>1</integer>"
                   + "<integer>2</integer>"
@@ -53,7 +56,7 @@ public class XMLListTest
    public void SimpleValuesList2Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myList><list>"
                   + "<integer>1</integer>"
                   + "<integer>2</integer>"
@@ -80,7 +83,7 @@ public class XMLListTest
    public void ObjectValuesListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myObjectList>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -102,7 +105,7 @@ public class XMLListTest
    public void OneValueListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myList>"
                   + "<integer>1</integer>"
             + "</myList>");
@@ -126,7 +129,7 @@ public class XMLListTest
    public void OneValueList2Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myList><list>"
                   + "<integer>1</integer>"
             + "</list></myList>");
@@ -150,7 +153,7 @@ public class XMLListTest
    public void ListValuesListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myListList>"
                + "<list>"
                   + "<ParsingBaseClass></ParsingBaseClass>"
@@ -176,7 +179,7 @@ public class XMLListTest
    public void EmptyValuesListTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myList>"
                + "<list>"
                + "</list>"

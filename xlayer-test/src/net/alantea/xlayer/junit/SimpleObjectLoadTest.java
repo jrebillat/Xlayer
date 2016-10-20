@@ -23,6 +23,8 @@ public class SimpleObjectLoadTest
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
 
+   private static Manager manager;
+   
    /**
     * Sets the up before class.
     *
@@ -31,7 +33,9 @@ public class SimpleObjectLoadTest
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {
-      Manager.addPackage("net.alantea.xlayer.test");
+      manager = new Manager();
+      manager.clearAll();
+      manager.addPackage("net.alantea.xlayer.test");
    }
 
    /**
@@ -43,24 +47,24 @@ public class SimpleObjectLoadTest
       BigRoot root = new BigRoot();
       
       // An integer wrapper with an integer 'value' attribute only available by its field
-      Manager.parse(root, HEADER_XML + "<simpleIntegerWrapper value='69'></simpleIntegerWrapper>");
+      manager.parse(root, HEADER_XML + "<simpleIntegerWrapper value='69'></simpleIntegerWrapper>");
       Assert.assertEquals(root.getSimpleIntegerWrapper().value, 69);
 
       // An integer wrapper with an integer 'value' subnode only available by its field
-      Manager.parse(root, HEADER_XML + "<simpleIntegerWrapper><value>666</value></simpleIntegerWrapper>");
+      manager.parse(root, HEADER_XML + "<simpleIntegerWrapper><value>666</value></simpleIntegerWrapper>");
       Assert.assertEquals(root.getSimpleIntegerWrapper().value, 666);
 
       // A string wrapper with an string 'value' subnode only available by its field
       String value = "Hello World !";
-      Manager.parse(root, HEADER_XML + "<simpleStringWrapper><value>" + value + "</value></simpleStringWrapper>");
+      manager.parse(root, HEADER_XML + "<simpleStringWrapper><value>" + value + "</value></simpleStringWrapper>");
       Assert.assertEquals(root.simpleStringWrapper.value, value);
 
       // An integer wrapper with an integer 'value' attribute only available by its wrapper
-      Manager.parse(root, HEADER_XML + "<setIntegerWrapper value='42'></setIntegerWrapper>");
+      manager.parse(root, HEADER_XML + "<setIntegerWrapper value='42'></setIntegerWrapper>");
       Assert.assertEquals(root.getSetIntegerWrapper().value, 42);
 
       // An integer wrapper with an integer 'value' subnode only available by its wrapper
-      Manager.parse(root, HEADER_XML + "<setIntegerWrapper><value>33</value></setIntegerWrapper>");
+      manager.parse(root, HEADER_XML + "<setIntegerWrapper><value>33</value></setIntegerWrapper>");
       Assert.assertEquals(root.getSetIntegerWrapper().value, 33);
    }
 
@@ -72,31 +76,31 @@ public class SimpleObjectLoadTest
    {
 	   SimpleRoot root = new SimpleRoot();
 
-	   Manager.parse(root, HEADER_XML + "<myInteger>123</myInteger>");
+	   manager.parse(root, HEADER_XML + "<myInteger>123</myInteger>");
 	   Assert.assertEquals(root.myInteger, 123);
 
-	   Manager.parse(root, HEADER_XML + "<myDouble>123.456</myDouble>");
+	   manager.parse(root, HEADER_XML + "<myDouble>123.456</myDouble>");
 	   Assert.assertEquals(root.myDouble, 123.456);
 
-	   Manager.parse(root, HEADER_XML + "<myFloat>456.123</myFloat>");
+	   manager.parse(root, HEADER_XML + "<myFloat>456.123</myFloat>");
 	   Assert.assertEquals(root.myFloat, 456.123f);
 
-	   Manager.parse(root, HEADER_XML + "<myShort>69</myShort>");
+	   manager.parse(root, HEADER_XML + "<myShort>69</myShort>");
 	   Assert.assertEquals(root.myShort, (short)69);
 
-	   Manager.parse(root, HEADER_XML + "<myByte>123</myByte>");
+	   manager.parse(root, HEADER_XML + "<myByte>123</myByte>");
 	   Assert.assertEquals(root.myByte, (byte)123);
 
 	   //Manager.parse(root, HEADER_XML + "<myChar>33</myChar>");
 	   //Assert.assertEquals(root.myChar, (char)33);
 
-	   Manager.parse(root, HEADER_XML + "<myLong>4567890123</myLong>");
+	   manager.parse(root, HEADER_XML + "<myLong>4567890123</myLong>");
 	   Assert.assertEquals(root.myLong, 4567890123L);
 
-	   Manager.parse(root, HEADER_XML + "<myString>Hello World</myString>");
+	   manager.parse(root, HEADER_XML + "<myString>Hello World</myString>");
 	   Assert.assertEquals(root.myString, "Hello World");
 
-      Manager.parse(root, HEADER_XML + "<myString><constant class='SimpleRoot' name='MESSAGE'/></myString>");
+      manager.parse(root, HEADER_XML + "<myString><constant class='SimpleRoot' name='MESSAGE'/></myString>");
       Assert.assertEquals(root.myString, SimpleRoot.MESSAGE);
    }
 
@@ -108,22 +112,22 @@ public class SimpleObjectLoadTest
    {
       MethodsRoot root = new MethodsRoot();
 
-      Manager.parse(root, HEADER_XML + "<withOneParameter>666</withOneParameter>");
+      manager.parse(root, HEADER_XML + "<withOneParameter>666</withOneParameter>");
       Assert.assertEquals(root.intResult, 666);
       
-      Manager.parse(root, HEADER_XML + "<withTwoParameters><integer>37</integer><integer>5</integer></withTwoParameters>");
+      manager.parse(root, HEADER_XML + "<withTwoParameters><integer>37</integer><integer>5</integer></withTwoParameters>");
       Assert.assertEquals(root.intResult, 42);
       
-      Manager.parse(root, HEADER_XML + "<withThreeParameters><String>Good bye </String><String>Crual</String><String>World</String></withThreeParameters>");
+      manager.parse(root, HEADER_XML + "<withThreeParameters><String>Good bye </String><String>Crual</String><String>World</String></withThreeParameters>");
       Assert.assertEquals(root.strResult, "Good bye Crual World");
       
-      Manager.parse(root, HEADER_XML + "<withList><String>Rami </String><String>na</String><String>grobis</String></withList>");
+      manager.parse(root, HEADER_XML + "<withList><String>Rami </String><String>na</String><String>grobis</String></withList>");
       Assert.assertEquals(root.strResult, "Raminagrobis");
       
-      Manager.parse(root, HEADER_XML + "<withIntAndList><integer>36</integer><list><String>Quai</String><String>des</String><String>Orfevres</String></list></withIntAndList>");
+      manager.parse(root, HEADER_XML + "<withIntAndList><integer>36</integer><list><String>Quai</String><String>des</String><String>Orfevres</String></list></withIntAndList>");
       Assert.assertEquals(root.strResult, "36 Quai des Orfevres");
 
-      Manager.parse(root, HEADER_XML + "<withOneParameter><withReturn/></withOneParameter>");
+      manager.parse(root, HEADER_XML + "<withOneParameter><withReturn/></withOneParameter>");
       Assert.assertEquals(root.intResult, 12);
    }
 
@@ -135,7 +139,7 @@ public class SimpleObjectLoadTest
    {
       BigRoot root = new BigRoot();
 
-      Manager.parse(root, HEADER_XML + "<integersWrapper>"
+      manager.parse(root, HEADER_XML + "<integersWrapper>"
             + "<integer>1</integer>"
             + "<integer>2</integer>"
             + "<integer>3</integer>"
@@ -147,7 +151,7 @@ public class SimpleObjectLoadTest
       Assert.assertEquals(root.getIntegers().values1.get(2).intValue(), 3);
       Assert.assertEquals(root.getIntegers().values1.get(3).intValue(), 4);
 
-      Manager.parse(root, HEADER_XML + "<integersWrapper>"
+      manager.parse(root, HEADER_XML + "<integersWrapper>"
             + "<value>11</value>"
             + "<value>12</value>"
             + "<value>13</value>"

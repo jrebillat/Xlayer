@@ -16,7 +16,7 @@ public class Run
    public static void main(String[] args) {
       if (args.length == 1)
       {
-         List<String> errors = Manager.parseFile(args[0]);
+         List<String> errors = new Manager().parseFile(args[0]);
          if (!errors.isEmpty())
          {
             for (String error : errors)

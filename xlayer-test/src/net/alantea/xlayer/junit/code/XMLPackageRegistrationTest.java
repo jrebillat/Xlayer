@@ -14,22 +14,25 @@ public class XMLPackageRegistrationTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
+      manager = new Manager();
+      manager.clearAll();
    }
    
    @Test
    public void addPackageTest()
    {
       // after adding package
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<?package javax.swing?>"
             + "<JFrame _put='myJFrame'>"
             + "</JFrame>");
-      Object object = Manager.getVariable("myJFrame");
+      Object object = manager.getVariable("myJFrame");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), JFrame.class);
    }
@@ -38,18 +41,18 @@ public class XMLPackageRegistrationTest
    public void addBadPackageTest()
    {
       // without adding package
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<Container _put='myComponent'>"
             + "</Container>");
-      Object object = Manager.getVariable("myComponent");
+      Object object = manager.getVariable("myComponent");
       Assert.assertNull(object);
       
       // with adding package
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<?package java.awt?>"
             + "<Container _put='myComponent'>"
             + "</Container>");
-      object = Manager.getVariable("myComponent");
+      object = manager.getVariable("myComponent");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), Container.class);
    }

@@ -14,20 +14,23 @@ public class XMLVariableTest
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
    
+   private static Manager manager;
+   
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
 
    @Test
    public void simpleVariableTest()
    {
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<integer _put='myTestVariable'>"
             + "24"
             + "</integer>");
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), Integer.class);
       Assert.assertEquals(object, new Integer(24));
@@ -36,10 +39,10 @@ public class XMLVariableTest
    @Test
    public void objectVariableTest()
    {
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<ParsingRoot _put='myTestVariable'>"
             + "</ParsingRoot>");
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), ParsingRoot.class);
    }
@@ -48,7 +51,7 @@ public class XMLVariableTest
    public void ListVariableTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<list _put='myTestVariable'>"
                   + "<integer>1</integer>"
                   + "<integer>2</integer>"
@@ -59,7 +62,7 @@ public class XMLVariableTest
       {
          System.out.println(err);
       }
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertTrue(List.class.isAssignableFrom(object.getClass()));
    }
@@ -68,15 +71,15 @@ public class XMLVariableTest
    public void useVariableTest()
    {
       // add variable
-      Manager.addVariable("firstVariable", "passed value");
+      manager.addVariable("firstVariable", "passed value");
       
-      List<String> errors = Manager.parse(null, HEADER_XML
+      List<String> errors = manager.parse(null, HEADER_XML
             + "<variable name='secondVariable'><string _variable='firstVariable'/></variable>");
       for (String err : errors)
       {
          System.out.println(err);
       }
-      Object object = Manager.getVariable("secondVariable");
+      Object object = manager.getVariable("secondVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), String.class);
       Assert.assertEquals(object, "passed value");

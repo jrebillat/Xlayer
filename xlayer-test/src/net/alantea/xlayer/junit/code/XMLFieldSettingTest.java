@@ -14,18 +14,21 @@ public class XMLFieldSettingTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
 
    @Test
    public void SimpleFieldSettingTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value>24</value>");
       for (String err : errors)
       {
@@ -40,7 +43,7 @@ public class XMLFieldSettingTest
    public void objectFieldSettingTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<testObject _class='ParsingDerivedClass'></testObject>");
       for (String err : errors)
       {
@@ -57,7 +60,7 @@ public class XMLFieldSettingTest
    public void ListFieldSetting1Test()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<myList>"
                + "<list>"
                   + "<integer>1</integer>"
@@ -85,7 +88,7 @@ public class XMLFieldSettingTest
  public void ListFieldSetting2Test()
  {
     ParsingRoot root = new ParsingRoot();
-    List<String> errors = Manager.parse(root, HEADER_XML
+    List<String> errors = manager.parse(root, HEADER_XML
           + "<myList>"
                 + "<integer>1</integer>"
                 + "<integer>2</integer>"
@@ -110,7 +113,7 @@ public class XMLFieldSettingTest
    public void invalidNameFieldSettingTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<nontestObject _class='ParsingDerivedClass'></nontestObject>");
       for (String err : errors)
       {
@@ -123,7 +126,7 @@ public class XMLFieldSettingTest
    public void invalidValueFieldSettingTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value>bad value</value>");
       for (String err : errors)
       {

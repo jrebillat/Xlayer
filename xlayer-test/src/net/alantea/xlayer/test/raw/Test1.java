@@ -10,9 +10,10 @@ public class Test1
    
    public static void main(String[] args)
    {
-      Manager.addPackage("net.alantea.xlayer.test.raw");
+      Manager manager = new Manager();
+      manager.addPackage("net.alantea.xlayer.test.raw");
       Root root = new Root();
-      List<String> errors = Manager.parseResource(root, DONNEES_XML);
+      List<String> errors = manager.parseResource(root, DONNEES_XML);
       for (String err : errors)
       {
          System.out.println(err);

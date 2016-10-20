@@ -13,18 +13,21 @@ public class XMLScriptingTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
-   } 
+      manager = new Manager();
+      manager.clearAll();
+   }
 
    @Test
    public void SimplescriptTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><script>var a; a = 24;</script></value>");
       for (String err : errors)
       {
@@ -39,7 +42,7 @@ public class XMLScriptingTest
    public void BadScriptTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><script>bad javascript sentence;</script></value>");
       for (String err : errors)
       {
@@ -52,7 +55,7 @@ public class XMLScriptingTest
    public void BadReturnScriptTest()
    {
       ParsingRoot root = new ParsingRoot();
-      List<String> errors = Manager.parse(root, HEADER_XML
+      List<String> errors = manager.parse(root, HEADER_XML
             + "<value><script>var a; a = 'Test me';</script></value>");
       for (String err : errors)
       {

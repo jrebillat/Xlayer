@@ -10,25 +10,28 @@ public class VariableRegistrationTest
 {
    /** The Constant HEADER_XML. */
    static final String HEADER_XML = "<?xml version=\"1.0\"?>\n";
+
+   private static Manager manager;
    
    @BeforeClass
    public void beforeClass()
    {
-      Manager.clearAll();
+      manager = new Manager();
+      manager.clearAll();
    }
    
    @Test
    public void addVariableTest()
    {
       // Before adding variable
-      Object object = Manager.getVariable("myVariable");
+      Object object = manager.getVariable("myVariable");
       Assert.assertNull(object);
       
       // add variable
-      Manager.addVariable("myVariable", "testMe");
+      manager.addVariable("myVariable", "testMe");
       
       // after adding package
-      object = Manager.getVariable("myVariable");
+      object = manager.getVariable("myVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), String.class);
       Assert.assertEquals(object, "testMe");
@@ -37,11 +40,11 @@ public class VariableRegistrationTest
    @Test
    public void getVariableTest()
    {
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<integer _put='myTestVariable'>"
             + "24"
             + "</integer>");
-      Object object = Manager.getVariable("myTestVariable");
+      Object object = manager.getVariable("myTestVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), Integer.class);
       Assert.assertEquals(object, new Integer(24));
@@ -51,11 +54,11 @@ public class VariableRegistrationTest
    public void useVariableTest()
    {
       // add variable
-      Manager.addVariable("firstVariable", "passed value");
+      manager.addVariable("firstVariable", "passed value");
       
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<variable name='secondVariable'><string _variable='firstVariable'/></variable>");
-      Object object = Manager.getVariable("secondVariable");
+      Object object = manager.getVariable("secondVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), String.class);
       Assert.assertEquals(object, "passed value");
@@ -65,14 +68,14 @@ public class VariableRegistrationTest
    public void redefineVariableTest()
    {
       // add variable
-      Manager.addVariable("firstVariable", "passed value");
+      manager.addVariable("firstVariable", "passed value");
       
-      Manager.parse(null, HEADER_XML
+      manager.parse(null, HEADER_XML
             + "<xlayer>"
             + "<variable name='secondVariable'><string _variable='firstVariable'/></variable>"
             + "<variable name='secondVariable'>Redefined</variable>"
             + "</xlayer>");
-      Object object = Manager.getVariable("secondVariable");
+      Object object = manager.getVariable("secondVariable");
       Assert.assertNotNull(object);
       Assert.assertEquals(object.getClass(), String.class);
       Assert.assertEquals(object, "Redefined");
