@@ -17,10 +17,10 @@
 					  if (methodName == "actionPerformed")
 					  {
 					    var Manager = Java.type("net.alantea.xlayer.Manager");
-					    var val = parseInt(Manager.getVariable('intvar'));
+					    var val = parseInt(manager.getVariable('intvar'));
 					    print('Yes, hello world ' + val);
-					    Manager.setVariable('intvar', val + 1);
-					    var label = Manager.getVariable('myLabel');
+					    manager.setVariable('intvar', val + 1);
+					    var label = manager.getVariable('myLabel');
 					    label.setText('Yes, hello world ' + val);
 					  }
 					</script>

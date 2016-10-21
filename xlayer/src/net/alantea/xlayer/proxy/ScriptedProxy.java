@@ -63,6 +63,8 @@ public class ScriptedProxy
          {
             engine.put(key, variables.get(key));
          }
+         engine.put("handler", handler);
+         engine.put("manager", handler.getManager());
          engine.put("methodName", method.getName());
          engine.put("methodArguments", objects);
          return engine.eval(script);
