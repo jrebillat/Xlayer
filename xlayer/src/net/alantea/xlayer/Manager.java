@@ -372,19 +372,19 @@ public final class Manager
    public boolean setOrAddAttribute(Class<?> cl, Object target, String key, Object value)
    {
       // Search for a simple method
-      if (MethodUtils.searchAndRunMethod(cl, target, null, key, value))
+      if (MethodUtils.searchAndRunMethod(cl, target, null, key, value, false))
       {
          return true;
       }
 
-      // Search for a set method
-      if (MethodUtils.searchAndRunMethod(cl, target, "set", key, value))
+      // Search for a setXXX method
+      if (MethodUtils.searchAndRunMethod(cl, target, "set", key, value, false))
       {
          return true;
       }
 
-      // Search for an add method
-      if (MethodUtils.searchAndRunMethod(cl, target, "add", key, value))
+      // Search for an addXXX method
+      if (MethodUtils.searchAndRunMethod(cl, target, "add", key, value, false))
       {
          return true;
       }
@@ -424,6 +424,18 @@ public final class Manager
       if ((superCl != null) && (!superCl.equals(Object.class)))
       {
          return setOrAddAttribute(superCl, target, key, value);
+      }
+
+      // Search for a simple 'set' method for type
+      if (MethodUtils.searchAndRunMethod(cl, target, "set", key, value, true))
+      {
+         return true;
+      }
+
+      // Search for a simple 'add' method for type
+      if (MethodUtils.searchAndRunMethod(cl, target, "add", key, value, true))
+      {
+         return true;
       }
       return false;
    }

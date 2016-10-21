@@ -25,20 +25,24 @@ public final class MethodUtils
     *
     * @param cl the class used to search for method
     * @param target the target object to apply method on
-    * @param prefix the prefix for method (like 'set' or 'add') or null for no prefix. It key is
+    * @param prefix the prefix for method (like 'set' or 'add') or null for no prefix. If key is
     *           null, the method name will be 'prefix()'.
     * @param key the key containing the core method name. If a prefix exists, the name will be
     *           'prefixKey()'. If prefix is null, the name is 'key()'.
     * @param value the value to give to the method.
     * @return true, if successful
     */
-   public static boolean searchAndRunMethod(Class<?> cl, Object target, String prefix, String key, Object value)
+   public static boolean searchAndRunMethod(Class<?> cl, Object target, String prefix, String key, Object value, boolean keyIsParameter)
    {
       try
       {
          // elaborate method name
          String methName = null;
-         if ((prefix != null) && (key != null))
+         if ((prefix != null) && (keyIsParameter))
+         {
+            methName = prefix;
+         }
+         else if ((prefix != null) && (key != null))
          {
             methName = prefix + key.substring(0, 1).toUpperCase() + key.substring(1);
          }
@@ -59,20 +63,47 @@ public final class MethodUtils
          Method[] methods = cl.getMethods();
          for (Method method : methods)
          {
-            if ((method.getName().equals(methName)) && (method.getParameterCount() == 1))
+            if ((method.getName().equals(methName)) && (method.getParameterCount() == (keyIsParameter ? 2 : 1)))
             {
                method.setAccessible(true);
-               Parameter parameter = method.getParameters()[0];
+               Parameter parameter = method.getParameters()[(keyIsParameter ? 1 : 0)];
                Class<?> clazz = parameter.getType();
+               if (!clazz.isAssignableFrom(value.getClass()))
+               {
+                  continue;
+               }
+               if (keyIsParameter)
+               {
+                  Parameter keyParameter = method.getParameters()[0];
+                  Class<?> keyClazz = keyParameter.getType();
+                  if (!keyClazz.isAssignableFrom(String.class))
+                  {
+                     continue;
+                  }
+               }
                if ((PrimitiveUtils.testPrimitive(clazz)) && (value != null))
                {
                   Object parm = PrimitiveUtils.getSimpleObject(clazz, value.toString());
-                  method.invoke(target, parm);
+                  if (keyIsParameter)
+                  {
+                     method.invoke(target, key, parm);
+                  }
+                  else
+                  {
+                     method.invoke(target, parm);
+                  }
                   return true;
                }
                else
                {
-                  method.invoke(target, value);
+                  if (keyIsParameter)
+                  {
+                     method.invoke(target, key, value);
+                  }
+                  else
+                  {
+                     method.invoke(target, value);
+                  }
                   return true;
                }
             }
@@ -90,7 +121,7 @@ public final class MethodUtils
       Class<?> sup = cl.getSuperclass();
       if ((sup != null) && (!sup.equals(Object.class)))
       {
-         return searchAndRunMethod(sup, target, prefix, key, value);
+         return searchAndRunMethod(sup, target, prefix, key, value, false);
       }
       return false;
    }
