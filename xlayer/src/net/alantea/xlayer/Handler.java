@@ -52,6 +52,7 @@ public class Handler extends DefaultHandler
    /**
     * Instantiates a new handler.
     *
+    * @param manager the manager to use
     * @param root the root
     */
    public Handler(Manager manager, Object root)
@@ -385,7 +386,7 @@ public class Handler extends DefaultHandler
    /**
     * Adds the errors.
     *
-    * @param errors the error list
+    * @param errs the errors
     */
    public void addErrors(List<String> errs)
    {

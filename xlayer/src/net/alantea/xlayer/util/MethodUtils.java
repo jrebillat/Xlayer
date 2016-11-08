@@ -30,6 +30,7 @@ public final class MethodUtils
     * @param key the key containing the core method name. If a prefix exists, the name will be
     *           'prefixKey()'. If prefix is null, the name is 'key()'.
     * @param value the value to give to the method.
+    * @param keyIsParameter true if the key is parameter
     * @return true, if successful
     */
    public static boolean searchAndRunMethod(Class<?> cl, Object target, String prefix, String key, Object value, boolean keyIsParameter)
@@ -229,10 +230,10 @@ public final class MethodUtils
     *
     * @param target the target object
     * @param methName the method name
+    * @param nbParms the number of parameters
     * @return true, if successful
     */
-   public
-   static String searchMethod(Object target, String methName, int nbParms)
+   public static String searchMethod(Object target, String methName, int nbParms)
    {
       String root = methName.substring(0, 1).toUpperCase() + methName.substring(1);
       String realName = methName;

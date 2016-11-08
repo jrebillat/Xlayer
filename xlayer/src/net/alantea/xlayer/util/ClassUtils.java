@@ -96,7 +96,7 @@ public final class ClassUtils
     * Adds a specific class. Override previous definition.
     *
     * @param className the class name to load
-    * @throws ClassNotFoundException
+    * @throws ClassNotFoundException the class not found exception
     */
    public void addClass(String className) throws ClassNotFoundException
    {
@@ -151,8 +151,9 @@ public final class ClassUtils
    /**
     * Gets a class. Store it for future use.
     *
+    * @param namespace the namespace to use
     * @param name the class name (maybe lower case)
-    * @return the class
+    * @return the class found
     */
    public Class<?> searchClass(String namespace, String name)
    {
@@ -211,6 +212,7 @@ public final class ClassUtils
    /**
     * Gets a new instance of a class. Store it for future use.
     *
+    * @param manager the manager to use
     * @param namespace the class namespace
     * @param name the class name
     * @param attrs the attributes to set

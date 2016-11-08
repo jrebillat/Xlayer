@@ -98,7 +98,7 @@ public final class Manager
     * Adds a specific class. Override previous definition.
     *
     * @param className the class name to load
-    * @throws ClassNotFoundException
+    * @throws ClassNotFoundException the class not found exception
     */
    public void addClass(String className) throws ClassNotFoundException
    {
@@ -126,7 +126,6 @@ public final class Manager
    /**
     * Parses the file.
     *
-    * @param root the root object
     * @param path the file path containing the XML
     * @return true, if successful
     */
@@ -150,7 +149,6 @@ public final class Manager
    /**
     * Parses the resource.
     *
-    * @param root the root object
     * @param path the resource path containing the XML
     * @return true, if successful
     */
@@ -174,7 +172,7 @@ public final class Manager
    /**
     * Parses the resource.
     *
-    * @param root the root object
+    * @param handler the handler
     * @param path the resource path containing the XML
     * @return true, if successful
     */
@@ -200,7 +198,7 @@ public final class Manager
    /**
     * Parses the file.
     *
-    * @param root the root object
+    * @param handler the handler
     * @param path the file path containing the XML
     * @return true, if successful
     */

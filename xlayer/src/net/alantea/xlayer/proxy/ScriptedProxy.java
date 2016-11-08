@@ -29,8 +29,8 @@ public class ScriptedProxy
 
    /**
     * Instantiates a new scripted proxy.
-    * @param handler 
     *
+    * @param handler the handler
     * @param script the script
     */
    public ScriptedProxy(Handler handler, String script)
@@ -78,6 +78,7 @@ public class ScriptedProxy
    /**
     * Do it.
     *
+    * @param handler the handler
     * @param script the script to launch
     * @return the object
     */
