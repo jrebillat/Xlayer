@@ -6,7 +6,6 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import net.alantea.xlayer.Handler;
-import net.alantea.xlayer.Manager;
 
 /**
  * Bundle to manage variables.
