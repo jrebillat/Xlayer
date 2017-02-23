@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.alantea</groupId>
   <artifactId>xlayer</artifactId>
-  <version>0.1.5</version>
+  <version>0.1.5-SNAPSHOT</version>
   <name>Xlayer</name>
   <packaging>jar</packaging>
   <description>XML parsing mechanism</description>
@@ -121,6 +121,6 @@
 	    <connection>scm:git:git@github.com:jrebillat/Xlayer.git</connection>
 	    <url>scm:git:git@github.com:jrebillat/Xlayer/src</url>
 	    <developerConnection>scm:git:git@github.com:jrebillat/Xlayer.git</developerConnection>
-      <tag>xlayer-0.1.5</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
