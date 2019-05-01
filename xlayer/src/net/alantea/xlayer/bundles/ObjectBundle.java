@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.xml.sax.Attributes;
 
+import net.alantea.utils.PrimitiveUtils;
 import net.alantea.xlayer.Handler;
 import net.alantea.xlayer.util.MethodUtils;
-import net.alantea.xlayer.util.PrimitiveUtils;
 
 /**
  * The Class ObjectBundle.

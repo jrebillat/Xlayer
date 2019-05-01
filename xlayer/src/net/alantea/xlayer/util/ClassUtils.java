@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.xml.sax.Attributes;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import net.alantea.tools.scan.Scanner;
 import net.alantea.xlayer.Manager;
 
 public final class ClassUtils
@@ -55,7 +55,7 @@ public final class ClassUtils
          return;
       }
       // use reflections to find content
-      List<String> allClasses = new FastClasspathScanner(pack).scan().getNamesOfAllClasses();
+      List<String> allClasses = Scanner.getNamesOfAllClasses();
 
       systemPackages.add(pack);
 

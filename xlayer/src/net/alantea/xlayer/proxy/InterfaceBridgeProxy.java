@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import net.alantea.xlayer.util.PrimitiveUtils;
+import net.alantea.utils.PrimitiveUtils;
 
 /**
  * The Class InterfaceBridgeProxy, used to make a bridge proxy between an interface and a script.

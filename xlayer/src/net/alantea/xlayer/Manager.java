@@ -26,9 +26,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import net.alantea.utils.PrimitiveUtils;
 import net.alantea.xlayer.util.ClassUtils;
 import net.alantea.xlayer.util.MethodUtils;
-import net.alantea.xlayer.util.PrimitiveUtils;
 import net.alantea.xlayer.util.Variable;
 
 /**

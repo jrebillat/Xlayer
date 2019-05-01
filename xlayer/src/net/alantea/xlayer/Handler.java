@@ -26,7 +26,7 @@ import net.alantea.xlayer.bundles.StaticBundle;
 import net.alantea.xlayer.bundles.VariableBundle;
 import net.alantea.xlayer.util.ClassUtils;
 import net.alantea.xlayer.util.MethodUtils;
-import net.alantea.xlayer.util.PrimitiveUtils;
+import net.alantea.utils.PrimitiveUtils;
 
 /**
  * Handler for Xlayer parsing.
