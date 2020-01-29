@@ -3,7 +3,7 @@
   <groupId>net.alantea</groupId>
   <artifactId>xlayer</artifactId>
   <version>0.1.5-SNAPSHOT</version>
-  <name>Xlayer</name>
+  <name>${project.groupId}:${project.artifactId}</name>
   <packaging>jar</packaging>
   <description>XML parsing mechanism</description>
   <licenses>
@@ -88,7 +88,6 @@
 	  <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
         <extensions>true</extensions>
         <configuration>
            <serverId>ossrh</serverId>
@@ -99,7 +98,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.3</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <useReleaseProfile>false</useReleaseProfile>
@@ -113,7 +111,7 @@
 	<dependency>
         <groupId>net.alantea</groupId>
         <artifactId>tools</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </dependency>
   </dependencies>
 	<url>https://github.com/jrebillat/Xlayer.git/xlayer</url>
