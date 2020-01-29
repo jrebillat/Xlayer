@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.alantea</groupId>
   <artifactId>xlayer</artifactId>
-  <version>0.1.5-SNAPSHOT</version>
+  <version>0.1.7-SNAPSHOT</version>
   <name>${project.groupId}:${project.artifactId}</name>
   <packaging>jar</packaging>
   <description>XML parsing mechanism</description>
@@ -108,11 +108,11 @@
     </plugins>
   </build>
   <dependencies>
-	<dependency>
-        <groupId>net.alantea</groupId>
-        <artifactId>tools</artifactId>
-        <version>0.0.1</version>
-    </dependency>
+    <dependency>
+    	<groupId>io.github.lukehutch</groupId>
+    	<artifactId>fast-classpath-scanner</artifactId>
+    	<version>2.0.6</version>
+	</dependency>
   </dependencies>
 	<url>https://github.com/jrebillat/Xlayer.git/xlayer</url>
 	<scm>
